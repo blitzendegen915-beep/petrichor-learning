@@ -1,0 +1,42 @@
+{
+  "techacademy": {
+    "label": "TechAcademy 公式サイトはこちら",
+    "url": "",
+    "official": "https://techacademy.jp/"
+  },
+  "progate": {
+    "label": "Progate 公式サイトはこちら",
+    "url": "",
+    "official": "https://prog-8.com/"
+  },
+  "dotinstall": {
+    "label": "ドットインストール 公式サイトはこちら",
+    "url": "",
+    "official": "https://dotinstall.com/"
+  },
+  "udemy": {
+    "label": "Udemy 公式サイトはこちら",
+    "url": "",
+    "official": "https://www.udemy.com/"
+  },
+  "schoo": {
+    "label": "Schoo 公式サイトはこちら",
+    "url": "",
+    "official": "https://schoo.jp/"
+  },
+  "chatgpt": {
+    "label": "ChatGPT 公式サイトはこちら",
+    "url": "",
+    "official": "https://chatgpt.com/"
+  },
+  "claude": {
+    "label": "Claude 公式サイトはこちら",
+    "url": "",
+    "official": "https://claude.ai/"
+  },
+  "github-copilot": {
+    "label": "GitHub Copilot 公式サイトはこちら",
+    "url": "",
+    "official": "https://github.com/features/copilot"
+  }
+}
