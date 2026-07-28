@@ -18,6 +18,36 @@ minutes: 7
 
 > **文章の自然さは、内容が正しい証拠にはならない。**
 
+```svg 正しい答えも誤った答えも、同じ工程を通って出てくる
+<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>正しい答えと誤った答えが同じ経路で作られること</title>
+  <defs>
+    <marker id="l3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+
+  <rect x="24" y="76" width="130" height="40" rx="6" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
+  <text x="89" y="101" text-anchor="middle" font-size="13" fill="var(--fg)">質問</text>
+  <line x1="158" y1="96" x2="186" y2="96" stroke="var(--muted)" stroke-width="2" marker-end="url(#l3a)"/>
+
+  <rect x="192" y="66" width="180" height="60" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+  <text x="282" y="90" text-anchor="middle" font-size="13" fill="var(--fg)">次に来そうな語を</text>
+  <text x="282" y="110" text-anchor="middle" font-size="13" fill="var(--fg)">1つずつ選ぶ</text>
+
+  <path d="M376 96 L404 96 L404 46 L432 46" fill="none" stroke="var(--muted)" stroke-width="2" marker-end="url(#l3a)"/>
+  <path d="M376 96 L404 96 L404 146 L432 146" fill="none" stroke="var(--muted)" stroke-width="2" marker-end="url(#l3a)"/>
+
+  <rect x="438" y="26" width="178" height="40" rx="6" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/>
+  <text x="527" y="51" text-anchor="middle" font-size="13" fill="var(--fg)">正しい答え</text>
+
+  <rect x="438" y="126" width="178" height="40" rx="6" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/>
+  <text x="527" y="151" text-anchor="middle" font-size="13" fill="var(--fg)">事実でない答え</text>
+
+  <text x="320" y="188" text-anchor="middle" font-size="13" fill="var(--muted)">分かれ道に「事実かどうかを確かめる」工程はない。だから見分けがつかない</text>
+</svg>
+```
+
 これが、この講座で一番覚えて帰ってほしい一文です。
 
 ## 誤りが出やすい場所には偏りがある

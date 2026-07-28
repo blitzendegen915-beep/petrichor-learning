@@ -20,6 +20,49 @@ minutes: 6
 
 つまり生成AIは、**答えを探しているのではなく、それらしい続きを作っています。**
 
+```svg 探して返す仕組みと、次の語を選び続ける仕組みの違い
+<svg viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>検索と生成AIの違い</title>
+  <defs>
+    <marker id="l1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+
+  <text x="156" y="24" text-anchor="middle" font-size="14" fill="var(--muted)">多くの人が想像している動き</text>
+  <rect x="50" y="38" width="212" height="34" rx="6" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
+  <text x="156" y="60" text-anchor="middle" font-size="13" fill="var(--fg)">質問する</text>
+  <line x1="156" y1="74" x2="156" y2="92" stroke="var(--muted)" stroke-width="2" marker-end="url(#l1a)"/>
+  <rect x="50" y="96" width="212" height="34" rx="6" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
+  <text x="156" y="118" text-anchor="middle" font-size="13" fill="var(--fg)">どこかを調べる</text>
+  <line x1="156" y1="132" x2="156" y2="150" stroke="var(--muted)" stroke-width="2" marker-end="url(#l1a)"/>
+  <rect x="50" y="154" width="212" height="34" rx="6" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
+  <text x="156" y="176" text-anchor="middle" font-size="13" fill="var(--fg)">見つけた答えを返す</text>
+  <text x="156" y="214" text-anchor="middle" font-size="13" fill="var(--muted)">実際にはこう動いていない</text>
+
+  <line x1="320" y1="30" x2="320" y2="220" stroke="var(--border)" stroke-width="2" stroke-dasharray="4 4"/>
+
+  <text x="484" y="24" text-anchor="middle" font-size="14" fill="var(--accent)">実際の動き</text>
+  <rect x="378" y="38" width="212" height="34" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+  <text x="484" y="60" text-anchor="middle" font-size="13" fill="var(--fg)">質問する</text>
+  <line x1="484" y1="74" x2="484" y2="92" stroke="var(--muted)" stroke-width="2" marker-end="url(#l1a)"/>
+
+  <rect x="378" y="96" width="60" height="34" rx="6" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
+  <text x="408" y="118" text-anchor="middle" font-size="12" fill="var(--fg)">次の語</text>
+  <line x1="442" y1="113" x2="458" y2="113" stroke="var(--muted)" stroke-width="2" marker-end="url(#l1a)"/>
+  <rect x="454" y="96" width="60" height="34" rx="6" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
+  <text x="484" y="118" text-anchor="middle" font-size="12" fill="var(--fg)">次の語</text>
+  <line x1="518" y1="113" x2="534" y2="113" stroke="var(--muted)" stroke-width="2" marker-end="url(#l1a)"/>
+  <rect x="530" y="96" width="60" height="34" rx="6" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
+  <text x="560" y="118" text-anchor="middle" font-size="12" fill="var(--fg)">次の語</text>
+
+  <line x1="484" y1="134" x2="484" y2="150" stroke="var(--muted)" stroke-width="2" marker-end="url(#l1a)"/>
+  <rect x="378" y="154" width="212" height="34" rx="6" fill="var(--accent)" stroke="var(--accent)" stroke-width="2"/>
+  <text x="484" y="176" text-anchor="middle" font-size="13" fill="#ffffff">文章ができあがる</text>
+  <text x="484" y="214" text-anchor="middle" font-size="13" fill="var(--muted)">確かめる工程はどこにもない</text>
+</svg>
+```
+
 ## この一点から、性質のほとんどが説明できる
 
 「次に来そうな言葉を選ぶ装置」だと理解すると、実際に困る場面の理由が、いちいち腑に落ちます。

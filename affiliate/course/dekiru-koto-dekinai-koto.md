@@ -22,6 +22,41 @@ minutes: 7
 | 最新性が要る | 今日の株価、先週の発表 | **危険** |
 | 責任が伴う | 診断、法的判断、最終的な意思決定 | **任せない** |
 
+図にすると、こういう軸です。
+
+```svg 正解の幅が狭くなるほど、生成AIは間違えやすくなる
+<svg viewBox="0 0 640 210" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>正解の幅と、生成AIの得意・不得意</title>
+  <defs>
+    <linearGradient id="l2g" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--accent-soft)"/>
+      <stop offset="100%" stop-color="var(--accent)"/>
+    </linearGradient>
+    <marker id="l2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+
+  <rect x="40" y="56" width="560" height="22" rx="11" fill="url(#l2g)"/>
+  <line x1="40" y1="98" x2="600" y2="98" stroke="var(--muted)" stroke-width="2" marker-end="url(#l2a)"/>
+  <text x="46" y="46" font-size="13" fill="var(--muted)">正解の幅が広い</text>
+  <text x="594" y="46" text-anchor="end" font-size="13" fill="var(--muted)">正解が1つに決まる</text>
+  <text x="320" y="118" text-anchor="middle" font-size="13" fill="var(--muted)">この向きに進むほど、生成AIは間違えやすくなる</text>
+
+  <text x="60" y="150" font-size="13" fill="var(--fg)">言い換え</text>
+  <text x="60" y="170" font-size="13" fill="var(--fg)">たたき台</text>
+  <text x="60" y="190" font-size="13" fill="var(--fg)">アイデア出し</text>
+
+  <text x="300" y="150" text-anchor="middle" font-size="13" fill="var(--fg)">要約</text>
+  <text x="300" y="170" text-anchor="middle" font-size="13" fill="var(--fg)">体裁の整形</text>
+  <text x="300" y="190" text-anchor="middle" font-size="12" fill="var(--muted)">中に危険な部分が混ざる</text>
+
+  <text x="580" y="150" text-anchor="end" font-size="13" fill="var(--fg)">金額・日付</text>
+  <text x="580" y="170" text-anchor="end" font-size="13" fill="var(--fg)">人名・出典</text>
+  <text x="580" y="190" text-anchor="end" font-size="13" fill="var(--fg)">計算・条文</text>
+</svg>
+```
+
 ## 「たたき台」という考え方が中心になる
 
 生成AIの使い方で、もっとも安定して成果が出るのは**たたき台を作らせること**です。

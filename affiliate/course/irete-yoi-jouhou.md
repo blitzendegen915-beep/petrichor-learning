@@ -18,6 +18,36 @@ minutes: 6
 
 送れないものは、生成AIにも入れないでください。逆に、送れるものなら概ね問題ありません。
 
+```svg 入力してよいかの判断は、1つの問いで分かれる
+<svg viewBox="0 0 640 230" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>入力してよい情報かどうかの判断の流れ</title>
+  <defs>
+    <marker id="l4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+
+  <rect x="170" y="14" width="300" height="44" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+  <text x="320" y="42" text-anchor="middle" font-size="14" fill="var(--fg)">社外の業者にメールで送れるか？</text>
+
+  <path d="M320 60 L320 78 L150 78 L150 96" fill="none" stroke="var(--muted)" stroke-width="2" marker-end="url(#l4a)"/>
+  <path d="M320 60 L320 78 L490 78 L490 96" fill="none" stroke="var(--muted)" stroke-width="2" marker-end="url(#l4a)"/>
+  <text x="150" y="94" text-anchor="middle" font-size="12" fill="var(--muted)">はい</text>
+  <text x="490" y="94" text-anchor="middle" font-size="12" fill="var(--muted)">いいえ</text>
+
+  <rect x="40" y="102" width="220" height="42" rx="6" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"/>
+  <text x="150" y="128" text-anchor="middle" font-size="13" fill="var(--fg)">そのまま入れてよい</text>
+
+  <rect x="380" y="102" width="220" height="42" rx="6" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
+  <text x="490" y="128" text-anchor="middle" font-size="13" fill="var(--fg)">そのままでは入れない</text>
+
+  <line x1="490" y1="146" x2="490" y2="164" stroke="var(--muted)" stroke-width="2" marker-end="url(#l4a)"/>
+  <rect x="360" y="168" width="260" height="46" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+  <text x="490" y="190" text-anchor="middle" font-size="13" fill="var(--fg)">固有名詞と金額を伏せる</text>
+  <text x="490" y="207" text-anchor="middle" font-size="12" fill="var(--muted)">→ 多くの場合これで使える</text>
+</svg>
+```
+
 ## 具体的な線引き
 
 **入れてはいけないもの**

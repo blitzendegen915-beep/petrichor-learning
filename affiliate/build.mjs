@@ -191,6 +191,40 @@ function renderInline(escapedText) {
   return out;
 }
 
+// ```svg フェンスだけは escapeHtml を通さず素通しするため、
+// 書けるものを図形タグに限定して守る。
+const SVG_ALLOWED_TAGS = new Set([
+  "svg", "g", "defs", "title", "desc", "path", "rect", "circle", "ellipse",
+  "line", "polyline", "polygon", "text", "tspan", "marker", "linearGradient",
+  "radialGradient", "stop", "use", "symbol", "clipPath", "mask",
+]);
+
+function assertSafeSvg(svg) {
+  if (!/^\s*<svg[\s>]/.test(svg)) {
+    throw new Error("svgブロックは <svg> で始める必要があります");
+  }
+  if (/<\s*script/i.test(svg)) {
+    throw new Error("svgブロックに <script> は書けません");
+  }
+  if (/\son[a-zA-Z]+\s*=/.test(svg)) {
+    throw new Error("svgブロックにイベントハンドラ属性(onclick等)は書けません");
+  }
+  if (/javascript\s*:/i.test(svg)) {
+    throw new Error("svgブロックに javascript: URL は書けません");
+  }
+  for (const m of svg.matchAll(/<\s*\/?\s*([a-zA-Z][a-zA-Z0-9:_-]*)/g)) {
+    if (!SVG_ALLOWED_TAGS.has(m[1])) {
+      throw new Error(`svgブロックで使えないタグです: <${m[1]}>`);
+    }
+  }
+}
+
+function renderFigure(svg, caption) {
+  assertSafeSvg(svg);
+  const cap = caption ? `<figcaption>${renderInline(escapeHtml(caption))}</figcaption>` : "";
+  return `<figure class="diagram">${svg}${cap}</figure>`;
+}
+
 // 確認問題。記事側は次の形で書く。
 //   Q: 設問
 //   - 誤りの選択肢
@@ -253,6 +287,7 @@ function renderQuiz(raw) {
 <div class="qz" data-total="${questions.length}">
   <ol class="qz-list">${body}</ol>
   <p class="qz-score" hidden></p>
+  <p class="qz-actions"><button type="button" class="qz-retry">もう一度解く</button></p>
 </div>
 <script>
 (function () {
@@ -280,14 +315,33 @@ function renderQuiz(raw) {
       ex.hidden = false;
 
       if (Object.keys(answered).length === total) {
-        var n = root.querySelectorAll(".qz-opt.is-correct:not(.is-wrong)").length;
         var wrong = root.querySelectorAll(".qz-opt.is-wrong").length;
+        var hit = total - wrong;
         var score = root.querySelector(".qz-score");
-        score.textContent = total - wrong + " / " + total + " 問正解";
+        score.textContent = hit + " / " + total + " 問正解";
         score.hidden = false;
+        // 全問正解のときだけ、この回を完了にできるようにする。
+        document.dispatchEvent(
+          new CustomEvent("quiz:done", { detail: { perfect: wrong === 0, hit: hit, total: total } })
+        );
       }
     });
   });
+
+  var retry = root.querySelector(".qz-retry");
+  if (retry) {
+    retry.addEventListener("click", function () {
+      answered = {};
+      root.querySelectorAll(".qz-opt").forEach(function (b) {
+        b.disabled = false;
+        b.classList.remove("is-correct", "is-wrong");
+      });
+      root.querySelectorAll(".qz-explain").forEach(function (e) { e.hidden = true; });
+      root.querySelector(".qz-score").hidden = true;
+      document.dispatchEvent(new CustomEvent("quiz:reset"));
+      root.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 })();
 </script>`;
 }
@@ -317,7 +371,8 @@ function renderMarkdown(md) {
     // fenced code block
     if (trimmed.startsWith("```")) {
       flush();
-      const lang = trimmed.slice(3).trim().split(/\s+/)[0].toLowerCase();
+      const info = trimmed.slice(3).trim();
+      const lang = info.split(/\s+/)[0].toLowerCase();
       const codeLines = [];
       i++;
       while (i < lines.length && !lines[i].trim().startsWith("```")) {
@@ -326,6 +381,10 @@ function renderMarkdown(md) {
       }
       i++; // skip closing fence
       const rawBlock = codeLines.join("\n");
+      if (lang === "svg") {
+        htmlParts.push(renderFigure(rawBlock, info.slice(3).trim()));
+        continue;
+      }
       if (lang === "quiz") {
         htmlParts.push(renderQuiz(rawBlock));
         continue;
@@ -1143,6 +1202,14 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   border: 1px solid var(--border); border-radius: 10px;
   background: var(--surface);
 }
+.cs-rank { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+.cs-rank-badge {
+  font-family: var(--font-display); font-weight: 700; font-size: 0.9rem;
+  padding: 0.28rem 0.95rem; border-radius: 999px;
+  background: var(--accent); color: #fff;
+}
+.cs-rank-note { font-size: 0.82rem; color: var(--muted); }
+.cs-next-rank { margin: 0.3rem 0 0; font-size: 0.78rem; color: var(--accent); font-weight: 700; }
 .cs-bar { height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
 .cs-bar-fill { height: 100%; background: var(--accent); transition: width 0.3s ease; }
 .cs-progress-text { margin: 0.6rem 0 0; font-size: 0.85rem; font-weight: 700; }
@@ -1191,6 +1258,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   background: transparent; color: var(--accent); cursor: pointer;
 }
 .ls-done-btn.is-done { background: var(--accent); color: #fff; }
+.ls-done-btn:disabled { border-color: var(--border); color: var(--muted); cursor: not-allowed; }
 .ls-done-note { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
 .ls-nav {
   max-width: 720px; margin: 0 auto 4rem;
@@ -1231,6 +1299,19 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   margin: 1.5rem 0 0; padding-top: 1rem;
   border-top: 1px solid var(--border);
   text-align: center; font-family: var(--font-display); font-weight: 700;
+}
+.qz-actions { margin: 0.7rem 0 0; text-align: center; }
+.qz-retry {
+  font: inherit; font-size: 0.8rem;
+  background: none; border: none; padding: 0;
+  color: var(--muted); text-decoration: underline; cursor: pointer;
+}
+.qz-retry:hover { color: var(--accent); }
+
+figure.diagram { margin: 2rem 0; }
+figure.diagram svg { width: 100%; height: auto; display: block; }
+figure.diagram figcaption {
+  margin-top: 0.6rem; font-size: 0.8rem; color: var(--muted); text-align: center;
 }
 
 .policy-page { max-width: 720px; margin: 0 auto; padding: 2rem 0 4rem; }
@@ -1295,6 +1376,16 @@ function loadCourse() {
   return { meta, ordered };
 }
 
+// 完了数に応じた称号。全回数に対する割合で決めるので、
+// 講座が増えても閾値を直す必要がない。
+const COURSE_RANKS = [
+  { at: 0.0, name: "受講生", note: "ここから始まります" },
+  { at: 0.25, name: "使い手", note: "道具の性質が分かってきました" },
+  { at: 0.5, name: "使いこなし", note: "任せる範囲を自分で決められます" },
+  { at: 0.75, name: "案内役", note: "人に説明できる段階です" },
+  { at: 1.0, name: "修了", note: "全回を終えました" },
+];
+
 // 進捗はlocalStorageに保存する。アカウント不要で、静的サイトのまま完結する。
 const COURSE_PROGRESS_JS = `
 (function () {
@@ -1348,8 +1439,13 @@ function renderCourseIndex(course) {
   </section>
 
   <div class="cs-progress" id="cs-progress" hidden>
+    <div class="cs-rank">
+      <span class="cs-rank-badge" id="cs-rank-name"></span>
+      <span class="cs-rank-note" id="cs-rank-note"></span>
+    </div>
     <div class="cs-bar"><div class="cs-bar-fill" id="cs-bar-fill"></div></div>
     <p class="cs-progress-text" id="cs-progress-text"></p>
+    <p class="cs-next-rank" id="cs-next-rank"></p>
     <button type="button" class="cs-reset" id="cs-reset">進捗を消す</button>
   </div>
 
@@ -1369,9 +1465,22 @@ ${COURSE_PROGRESS_JS}
   });
   var wrap = document.getElementById("cs-progress");
   if (n > 0) {
+    var ranks = ${JSON.stringify(COURSE_RANKS).replace(/</g, "\\u003c")};
+    var ratio = n / total;
+    var cur = ranks[0], next = null;
+    for (var r = 0; r < ranks.length; r++) {
+      if (ratio >= ranks[r].at) cur = ranks[r];
+      else { next = ranks[r]; break; }
+    }
+
     wrap.hidden = false;
-    document.getElementById("cs-bar-fill").style.width = Math.round((n / total) * 100) + "%";
+    document.getElementById("cs-bar-fill").style.width = Math.round(ratio * 100) + "%";
     document.getElementById("cs-progress-text").textContent = total + "回中 " + n + "回を完了";
+    document.getElementById("cs-rank-name").textContent = cur.name;
+    document.getElementById("cs-rank-note").textContent = cur.note;
+    document.getElementById("cs-next-rank").textContent = next
+      ? "あと" + (Math.ceil(next.at * total) - n) + "回で「" + next.name + "」"
+      : "";
   }
   document.getElementById("cs-reset").addEventListener("click", function () {
     window.plCourse.write({});
@@ -1409,8 +1518,8 @@ function renderLessonPage(lesson, index, ordered) {
     ${lesson.bodyHtml}
 
     <div class="ls-done">
-      <button type="button" class="ls-done-btn" id="ls-done">この回を完了にする</button>
-      <p class="ls-done-note">進捗はこのブラウザにのみ保存されます</p>
+      <button type="button" class="ls-done-btn" id="ls-done" disabled>この回を完了にする</button>
+      <p class="ls-done-note" id="ls-done-note">確認問題に全問正解すると完了にできます</p>
     </div>
   </article>
   ${nav}
@@ -1421,22 +1530,50 @@ ${COURSE_PROGRESS_JS}
 (function () {
   var SLUG = ${JSON.stringify(lesson.slug)};
   var btn = document.getElementById("ls-done");
+  var note = document.getElementById("ls-done-note");
+
   function paint() {
     var done = window.plCourse.read();
     if (done[SLUG]) {
+      btn.disabled = false;
       btn.textContent = "完了ずみ（クリックで取り消す）";
       btn.classList.add("is-done");
+      note.textContent = "進捗はこのブラウザにのみ保存されます";
     } else {
       btn.textContent = "この回を完了にする";
       btn.classList.remove("is-done");
+      if (btn.disabled) note.textContent = "確認問題に全問正解すると完了にできます";
     }
   }
+
+  // 全問正解したときだけ、完了ボタンを押せるようにする。
+  document.addEventListener("quiz:done", function (e) {
+    if (e.detail.perfect) {
+      btn.disabled = false;
+      note.textContent = "全問正解です。完了にできます";
+    } else {
+      btn.disabled = true;
+      note.textContent =
+        e.detail.hit + " / " + e.detail.total + " 問正解。全問正解すると完了にできます";
+    }
+  });
+
+  document.addEventListener("quiz:reset", function () {
+    var done = window.plCourse.read();
+    if (!done[SLUG]) {
+      btn.disabled = true;
+      note.textContent = "確認問題に全問正解すると完了にできます";
+    }
+  });
+
   btn.addEventListener("click", function () {
+    if (btn.disabled) return;
     var done = window.plCourse.read();
     if (done[SLUG]) { delete done[SLUG]; } else { done[SLUG] = true; }
     window.plCourse.write(done);
     paint();
   });
+
   paint();
 })();`;
 
