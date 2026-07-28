@@ -13,6 +13,12 @@
         "naze-machigaeru-noka",
         "irete-yoi-jouhou"
       ]
+    },
+    {
+      "id": "ch2",
+      "title": "第2章　指示の型を身につける",
+      "summary": "生成AIの出来は、指示の書き方で大きく変わります。ここでは覚える型を4つに絞り、うまくいかないときに症状から原因を引ける形にしておきます。組み立てツールで実際に手を動かします。",
+      "lessons": ["shiji-no-kihon-kata", "kata-ga-kikanai-toki"]
     }
   ]
 }

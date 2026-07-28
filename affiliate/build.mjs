@@ -191,6 +191,130 @@ function renderInline(escapedText) {
   return out;
 }
 
+const WIDGETS = {
+  "prompt-builder": renderPromptBuilder,
+};
+
+// 「目的・条件・形式」を埋めるとプロンプトが組み上がるツール。
+// 記事で説明した型を、読んだその場で試せるようにするのが狙い。
+function renderPromptBuilder() {
+  const presets = [
+    {
+      label: "メールの返信",
+      purpose: "取引先へ納期変更のお詫びと新しい日程の連絡をする",
+      reader: "取引先の担当者(面識あり)",
+      cond: "丁寧すぎない敬語。言い訳を並べない。代替案を必ず添える",
+      form: "件名と本文に分ける。本文は250字程度",
+    },
+    {
+      label: "長文の要約",
+      purpose: "会議の議事録から、参加していない人が判断できる形に要約する",
+      reader: "会議に出ていない上司",
+      cond: "決まったことと保留のことを分ける。発言者名は残す",
+      form: "箇条書き。先に結論、次に保留事項",
+    },
+    {
+      label: "企画のたたき台",
+      purpose: "新サービスの告知に使うSNS投稿の案を出す",
+      reader: "既存顧客",
+      cond: "誇大な表現を使わない。値引きを前面に出さない",
+      form: "3案。それぞれ120字以内",
+    },
+  ];
+
+  const field = (id, label, ph) => `
+      <label class="pb-field">
+        <span class="pb-label">${escapeHtml(label)}</span>
+        <textarea id="${id}" rows="2" placeholder="${escapeHtml(ph)}"></textarea>
+      </label>`;
+
+  return `
+<div class="pb" id="pb">
+  <div class="pb-head">
+    <strong>プロンプト組み立てツール</strong>
+    <span class="pb-note">入力はこのページの中だけで処理され、どこにも送信されません</span>
+  </div>
+
+  <div class="pb-presets">
+    <span class="pb-presets-label">例を入れる：</span>
+    ${presets
+      .map(
+        (p, i) =>
+          `<button type="button" class="pb-preset" data-i="${i}">${escapeHtml(p.label)}</button>`,
+      )
+      .join("\n    ")}
+  </div>
+
+  <div class="pb-grid">
+    ${field("pb-purpose", "目的 — 何のために使うか", "例: 取引先へ納期変更のお詫びを送る")}
+    ${field("pb-reader", "相手 — 誰が読むか", "例: 取引先の担当者(面識あり)")}
+    ${field("pb-cond", "条件 — 守ってほしいこと", "例: 丁寧すぎない敬語。代替案を添える")}
+    ${field("pb-form", "形式 — どんな形で出すか", "例: 件名と本文に分ける。250字程度")}
+  </div>
+
+  <div class="pb-out-head">
+    <span>できあがったプロンプト</span>
+    <button type="button" class="pb-copy" id="pb-copy">コピー</button>
+  </div>
+  <pre class="pb-out" id="pb-out"></pre>
+</div>
+<script>
+(function () {
+  var presets = ${JSON.stringify(presets).replace(/</g, "\\u003c")};
+  var ids = ["purpose", "reader", "cond", "form"];
+  var el = {};
+  ids.forEach(function (k) { el[k] = document.getElementById("pb-" + k); });
+  var out = document.getElementById("pb-out");
+  var copy = document.getElementById("pb-copy");
+
+  function line(prefix, v) { return v.trim() ? prefix + v.trim() + "\\n" : ""; }
+
+  function build() {
+    var s = "";
+    s += line("【目的】", el.purpose.value);
+    s += line("【読む人】", el.reader.value);
+    s += line("【条件】", el.cond.value);
+    s += line("【出力の形式】", el.form.value);
+    if (!s) {
+      out.textContent = "上の4つを埋めると、ここにプロンプトが組み上がります。すべて埋める必要はありません。";
+      out.classList.add("is-empty");
+      return;
+    }
+    out.classList.remove("is-empty");
+    out.textContent =
+      "以下の条件で作成してください。\\n\\n" + s +
+      "\\n分からない点があれば、書き始める前に質問してください。";
+  }
+
+  ids.forEach(function (k) { el[k].addEventListener("input", build); });
+
+  document.querySelectorAll(".pb-preset").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var p = presets[Number(b.dataset.i)];
+      el.purpose.value = p.purpose;
+      el.reader.value = p.reader;
+      el.cond.value = p.cond;
+      el.form.value = p.form;
+      build();
+    });
+  });
+
+  copy.addEventListener("click", function () {
+    if (out.classList.contains("is-empty")) return;
+    navigator.clipboard.writeText(out.textContent).then(function () {
+      copy.textContent = "コピーしました";
+      setTimeout(function () { copy.textContent = "コピー"; }, 1600);
+    }).catch(function () {
+      copy.textContent = "コピーできませんでした";
+      setTimeout(function () { copy.textContent = "コピー"; }, 1600);
+    });
+  });
+
+  build();
+})();
+</script>`;
+}
+
 // ```svg フェンスだけは escapeHtml を通さず素通しするため、
 // 書けるものを図形タグに限定して守る。
 const SVG_ALLOWED_TAGS = new Set([
@@ -387,6 +511,13 @@ function renderMarkdown(md) {
       }
       if (lang === "quiz") {
         htmlParts.push(renderQuiz(rawBlock));
+        continue;
+      }
+      if (lang === "widget") {
+        const name = info.split(/\s+/)[1] || "";
+        const widget = WIDGETS[name];
+        if (!widget) throw new Error(`未知のwidgetです: ${name || "(名前なし)"}`);
+        htmlParts.push(widget());
         continue;
       }
       htmlParts.push(`<pre><code>${escapeHtml(rawBlock)}</code></pre>`);
@@ -1194,6 +1325,69 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 .site-footer p { margin: 0.35rem 0; }
 .site-footer a { color: var(--muted); }
 .site-footer a:hover { color: var(--accent); }
+
+.pb {
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface);
+  padding: 1.25rem;
+  margin: 2rem 0;
+}
+.pb-head { display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 1rem; }
+.pb-head strong { font-family: var(--font-display); font-size: 1.02rem; }
+.pb-note { font-size: 0.76rem; color: var(--muted); }
+.pb-presets {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+.pb-presets-label { font-size: 0.8rem; color: var(--muted); }
+.pb-preset {
+  font: inherit; font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+.pb-preset:hover { background: var(--accent-soft); }
+.pb-grid { display: grid; gap: 0.85rem; }
+@media (min-width: 640px) { .pb-grid { grid-template-columns: 1fr 1fr; } }
+.pb-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.pb-label { font-size: 0.82rem; font-weight: 700; }
+.pb-field textarea {
+  font: inherit; font-size: 0.9rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--bg);
+  color: var(--fg);
+  resize: vertical;
+}
+.pb-field textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.pb-out-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 1.15rem 0 0.4rem;
+  font-size: 0.82rem; font-weight: 700;
+}
+.pb-copy {
+  font: inherit; font-size: 0.78rem; font-weight: 700;
+  padding: 0.3rem 0.9rem;
+  border: none; border-radius: var(--r);
+  background: var(--accent); color: var(--accent-fg);
+  cursor: pointer;
+}
+.pb-out {
+  white-space: pre-wrap; word-break: break-word;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 0.85rem;
+  font-size: 0.88rem;
+  line-height: 1.75;
+  margin: 0;
+}
+.pb-out.is-empty { color: var(--muted); }
 
 /* --- コース --- */
 .cs-progress {
