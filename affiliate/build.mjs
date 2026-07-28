@@ -53,6 +53,12 @@ function articleUrl(slug) {
 // to the previous (image-less) meta behavior.
 const HAS_OGP_IMAGE = fs.existsSync(path.join(STATIC_DIR, "ogp.png"));
 const OGP_IMAGE_URL = HAS_OGP_IMAGE ? `${CONFIG.baseUrl}/static/ogp.png` : null;
+const HAS_FAVICON = fs.existsSync(path.join(STATIC_DIR, "favicon.svg"));
+
+const PRIVACY_URL = `${CONFIG.baseUrl}${CONFIG.blogPath}/privacy/`;
+const ABOUT_URL = `${CONFIG.baseUrl}${CONFIG.blogPath}/about/`;
+const CONTACT_URL = `${CONFIG.baseUrl}${CONFIG.blogPath}/contact/`;
+const CONTACT_EMAIL = "dar42508@gmail.com";
 
 const DISCLOSURE_TEXT =
   "※本記事にはプロモーション(アフィリエイト広告)が含まれています。";
@@ -1020,6 +1026,14 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 }
 .site-footer .inner { max-width: var(--wide); margin: 0 auto; }
 .site-footer p { margin: 0.35rem 0; }
+.site-footer a { color: var(--muted); }
+.site-footer a:hover { color: var(--accent); }
+
+.policy-page { max-width: 720px; margin: 0 auto; padding: 2rem 0 4rem; }
+.policy-page h1 { margin-bottom: 1.5rem; }
+.policy-page h2 { margin-top: 2.2rem; font-size: 1.15rem; }
+.policy-page p, .policy-page li { color: var(--muted); line-height: 1.9; }
+
 .site-footer .footer-disclosure {
   display: flex;
   align-items: center;
@@ -1039,6 +1053,108 @@ function categoryChipClass(category) {
   return CATEGORY_CHIP_PALETTE[hash % CATEGORY_CHIP_PALETTE.length];
 }
 
+function renderPolicyPages() {
+  const shell = (title, description, canonical, inner, type) =>
+    pageShell({
+      title,
+      description,
+      canonical,
+      ogType: "website",
+      bodyHtml: `\n<main>\n  <article class="policy-page">\n${inner}\n  </article>\n</main>`,
+      jsonLd: { "@context": "https://schema.org", "@type": type, name: title, url: canonical },
+      showDisclosure: false,
+    });
+
+  const privacy = shell(
+    "プライバシーポリシー",
+    `${CONFIG.siteName}のプライバシーポリシーです。Cookieの利用、アフィリエイトプログラム、外部サービスの利用について説明しています。`,
+    PRIVACY_URL,
+    `    <h1>プライバシーポリシー</h1>
+    <p>${escapeHtml(CONFIG.siteName)}（以下「当サイト」）における、個人情報および利用者情報の取り扱いについて説明します。</p>
+
+    <h2>アフィリエイトプログラムについて</h2>
+    <p>当サイトは、アフィリエイトサービスプロバイダ(ASP)が提供する成果報酬型広告プログラムに参加しています。当サイトに掲載しているリンクの一部には、ASPを経由した広告リンクが含まれます。これらのリンクを利用者がクリックした場合、ASPおよび提携先企業によってCookie等を用いた計測が行われることがあります。</p>
+
+    <h2>Cookieの利用について</h2>
+    <p>Cookieとは、ウェブサイトが利用者のブラウザに送信し、端末に保存される情報です。当サイトでは、上記アフィリエイトプログラムの成果計測のためにCookieが利用される場合があります。また、将来的にアクセス解析ツールや第三者配信の広告サービスを導入する場合、これらのサービス提供者によってもCookieが利用されることがあります。その場合、収集される情報に個人を特定できる情報は含まれません。</p>
+    <p>Cookieの利用を望まない場合は、ブラウザの設定で無効化することができます。無効化した場合、当サイトの一部機能が正しく動作しない可能性があります。</p>
+
+    <h2>免責事項</h2>
+    <p>当サイトの記事内容については正確性の確保に努めていますが、内容の正確性・完全性を保証するものではありません。掲載しているサービスの料金・カリキュラム等は変更される場合があるため、利用の際は必ず公式サイトで最新の情報をご確認ください。学習方法や進路の選択は最終的にご自身の判断で行っていただくものとし、当サイトの情報を利用したことによって生じた損害について、当サイトは一切の責任を負いません。</p>
+
+    <h2>著作権について</h2>
+    <p>当サイトに掲載している文章・画像等の著作権は、特に断りのない限り当サイトに帰属します。無断での転載・複製はお控えください。</p>
+
+    <h2>プライバシーポリシーの変更について</h2>
+    <p>当サイトは、法令の変更や運営方針の変更等にともない、本ポリシーの内容を予告なく変更することがあります。変更後の内容は、当ページに掲載した時点から効力を持つものとします。</p>
+
+    <h2>お問い合わせ</h2>
+    <p>当サイトの内容に関するお問い合わせは、<a href="${CONTACT_URL}">お問い合わせページ</a>をご確認ください。</p>`,
+    "WebPage",
+  );
+
+  const about = shell(
+    "運営者情報",
+    `${CONFIG.siteName}の運営体制と編集方針について説明しています。`,
+    ABOUT_URL,
+    `    <h1>運営者情報</h1>
+
+    <h2>サイトについて</h2>
+    <p>${escapeHtml(CONFIG.siteName)}は、プログラミングとAIの学習について扱う情報サイトです。独学とスクールの選び方、学習の進め方、未経験からの転職といったテーマを取り上げています。</p>
+
+    <h2>運営体制</h2>
+    <p>当サイトは個人運営です。専属のライターや大規模な編集部を持つメディアではなく、運営者自身が調査・執筆・確認を行っています。</p>
+
+    <h2>編集方針</h2>
+    <p>学習方法や進路は、読者の時間とお金に直接関わるテーマです。そのため、公開前に次の点を確認する工程を設けています。</p>
+    <ul>
+      <li>出典を確認できない統計や調査結果を書いていないか</li>
+      <li>断定的な効果保証や誇張表現を含んでいないか</li>
+      <li>料金など変動する情報を、断定的に書いていないか</li>
+    </ul>
+    <p>特に料金やカリキュラムは各社の判断で随時変更されるため、記事内の情報が常に最新であるとは限りません。重要な判断をする際は、必ず公式サイトで最新の情報をご確認ください。</p>
+
+    <h2>収益について</h2>
+    <p>当サイトは、アフィリエイトによる成果報酬で運営されています。紹介しているサービスは調査したうえで掲載していますが、提携の有無が記事の評価内容を左右することはありません。詳細は<a href="${PRIVACY_URL}">プライバシーポリシー</a>をご覧ください。</p>
+
+    <h2>お問い合わせ</h2>
+    <p>サイトの内容に関するご意見・ご指摘は<a href="${CONTACT_URL}">お問い合わせページ</a>からお願いします。</p>`,
+    "AboutPage",
+  );
+
+  const contact = shell(
+    "お問い合わせ",
+    `${CONFIG.siteName}へのお問い合わせ方法をご案内します。`,
+    CONTACT_URL,
+    `    <h1>お問い合わせ</h1>
+    <p>記事の内容に関するご指摘、掲載しているサービスに関するお問い合わせ、その他ご意見がありましたら、以下のメールアドレスまでご連絡ください。</p>
+    <p><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p>
+    <p>内容を確認のうえ、必要に応じて対応いたします。すべてのお問い合わせに返信をお約束するものではない点、あらかじめご了承ください。</p>`,
+    "ContactPage",
+  );
+
+  return { privacy, about, contact };
+}
+
+function render404Page() {
+  return pageShell({
+    title: "ページが見つかりません",
+    description: "お探しのページは見つかりませんでした。",
+    canonical: `${CONFIG.baseUrl}/404.html`,
+    ogType: "website",
+    bodyHtml: `
+<main>
+  <article class="policy-page" style="text-align:center; padding-top:3rem;">
+    <h1>ページが見つかりませんでした</h1>
+    <p>お探しのページは移動したか、削除された可能性があります。URLをご確認いただくか、以下からお探しください。</p>
+    <p style="margin-top:2rem;"><a class="aff-btn" href="${SITE_ROOT_URL}">トップページへ戻る</a></p>
+  </article>
+</main>`,
+    jsonLd: { "@context": "https://schema.org", "@type": "WebPage", name: "ページが見つかりません" },
+    showDisclosure: false,
+  });
+}
+
 function pageShell({ title, description, canonical, ogType = "article", bodyHtml, jsonLd, showDisclosure = true }) {
   const fullTitle = `${title} | ${CONFIG.siteName}`;
   return `<!DOCTYPE html>
@@ -1048,7 +1164,10 @@ function pageShell({ title, description, canonical, ogType = "article", bodyHtml
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(fullTitle)}</title>
 <meta name="description" content="${escapeHtml(description)}">
-<link rel="canonical" href="${canonical}">
+${HAS_FAVICON ? `<link rel="icon" href="${CONFIG.baseUrl}/static/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="${CONFIG.baseUrl}/static/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="${CONFIG.baseUrl}/static/apple-touch-icon.png">
+` : ""}<link rel="canonical" href="${canonical}">
 <meta property="og:title" content="${escapeHtml(title)}">
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta property="og:type" content="${ogType}">
@@ -1081,6 +1200,7 @@ ${bodyHtml}
   <div class="inner">
     ${showDisclosure ? `<p class="footer-disclosure"><span class="disclosure-badge">PR</span><span>${DISCLOSURE_TEXT}</span></p>` : ""}
     <p>本サイトの情報は正確性に努めていますが、内容を保証するものではありません。掲載の商品・サービスの詳細は必ず公式サイトでご確認ください。</p>
+    <p><a href="${ABOUT_URL}">運営者情報</a> ・ <a href="${CONTACT_URL}">お問い合わせ</a> ・ <a href="${PRIVACY_URL}">プライバシーポリシー</a></p>
     <p>&copy; ${new Date().getFullYear()} ${escapeHtml(CONFIG.siteName)}</p>
   </div>
 </footer>
@@ -1231,6 +1351,9 @@ function renderSitemap(articles) {
   const urls = [
     { loc: SITE_ROOT_URL },
     ...(BLOG_INDEX_URL !== SITE_ROOT_URL ? [{ loc: BLOG_INDEX_URL }] : []),
+    { loc: PRIVACY_URL },
+    { loc: ABOUT_URL },
+    { loc: CONTACT_URL },
     ...articles.map((a) => ({ loc: articleUrl(a.slug), lastmod: a.date })),
   ];
   const entries = urls
@@ -1277,6 +1400,13 @@ function build() {
   }
 
   writeFile(path.join(BLOG_OUT_DIR, "index.html"), renderBlogIndex(articles));
+
+  const policy = renderPolicyPages();
+  writeFile(path.join(BLOG_OUT_DIR, "privacy", "index.html"), policy.privacy);
+  writeFile(path.join(BLOG_OUT_DIR, "about", "index.html"), policy.about);
+  writeFile(path.join(BLOG_OUT_DIR, "contact", "index.html"), policy.contact);
+  writeFile(path.join(DIST_DIR, "404.html"), render404Page());
+
   writeFile(path.join(BLOG_OUT_DIR, "feed.xml"), renderFeed(articles));
   writeFile(path.join(DIST_DIR, "sitemap.xml"), renderSitemap(articles));
   writeFile(path.join(DIST_DIR, "robots.txt"), renderRobots());
