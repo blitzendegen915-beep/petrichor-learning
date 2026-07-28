@@ -191,6 +191,107 @@ function renderInline(escapedText) {
   return out;
 }
 
+// 確認問題。記事側は次の形で書く。
+//   Q: 設問
+//   - 誤りの選択肢
+//   * 正しい選択肢 | 正解時に出す解説
+// 採点はブラウザ内で完結する。答えをHTMLに直接埋めるため、
+// ソースを読めば正解は分かるが、学習用途なので割り切る。
+function parseQuiz(raw) {
+  const questions = [];
+  let cur = null;
+  for (const line of raw.split("\n")) {
+    const t = line.trim();
+    if (!t) continue;
+    const q = t.match(/^Q\s*[:：]\s*(.+)$/);
+    if (q) {
+      cur = { q: q[1].trim(), options: [] };
+      questions.push(cur);
+      continue;
+    }
+    const o = t.match(/^([-*])\s+(.+)$/);
+    if (o && cur) {
+      const [text, explain = ""] = o[2].split("|").map((s) => s.trim());
+      cur.options.push({ text, correct: o[1] === "*", explain });
+    }
+  }
+  for (const item of questions) {
+    if (item.options.length < 2) throw new Error(`確認問題の選択肢が足りません: ${item.q}`);
+    if (!item.options.some((o) => o.correct)) throw new Error(`正解が指定されていません: ${item.q}`);
+  }
+  if (!questions.length) throw new Error("確認問題が空です");
+  return questions;
+}
+
+function renderQuiz(raw) {
+  const questions = parseQuiz(raw);
+  const body = questions
+    .map(
+      (item, qi) => `
+    <li class="qz-q">
+      <p class="qz-text"><span class="qz-num">Q${qi + 1}</span>${renderInline(escapeHtml(item.q))}</p>
+      <div class="qz-opts">
+        ${item.options
+          .map(
+            (o, oi) =>
+              `<button type="button" class="qz-opt" data-q="${qi}" data-o="${oi}" data-correct="${o.correct ? "1" : "0"}">${escapeHtml(o.text)}</button>`,
+          )
+          .join("\n        ")}
+      </div>
+      <p class="qz-explain" data-q="${qi}" hidden></p>
+    </li>`,
+    )
+    .join("");
+
+  // 解説は「正解です。」を除いた本体だけを持たせ、
+  // 正誤に応じた前置きはブラウザ側で付ける(誤答時に「正解です」と出さないため)。
+  const explains = questions.map((item) =>
+    (item.options.find((o) => o.correct).explain || "").replace(/^正解です。\s*/, ""),
+  );
+
+  return `
+<div class="qz" data-total="${questions.length}">
+  <ol class="qz-list">${body}</ol>
+  <p class="qz-score" hidden></p>
+</div>
+<script>
+(function () {
+  var root = document.currentScript.previousElementSibling;
+  var explains = ${JSON.stringify(explains).replace(/</g, "\\u003c")};
+  var total = Number(root.dataset.total);
+  var answered = {};
+
+  root.querySelectorAll(".qz-opt").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var qi = btn.dataset.q;
+      if (answered[qi]) return;
+      answered[qi] = true;
+
+      var correct = btn.dataset.correct === "1";
+      root.querySelectorAll('.qz-opt[data-q="' + qi + '"]').forEach(function (b) {
+        b.disabled = true;
+        if (b.dataset.correct === "1") b.classList.add("is-correct");
+      });
+      if (!correct) btn.classList.add("is-wrong");
+
+      var ex = root.querySelector('.qz-explain[data-q="' + qi + '"]');
+      ex.textContent =
+        (correct ? "正解です。" : "惜しい。正解は色の付いた選択肢です。") + explains[qi];
+      ex.hidden = false;
+
+      if (Object.keys(answered).length === total) {
+        var n = root.querySelectorAll(".qz-opt.is-correct:not(.is-wrong)").length;
+        var wrong = root.querySelectorAll(".qz-opt.is-wrong").length;
+        var score = root.querySelector(".qz-score");
+        score.textContent = total - wrong + " / " + total + " 問正解";
+        score.hidden = false;
+      }
+    });
+  });
+})();
+</script>`;
+}
+
 function renderMarkdown(md) {
   const lines = md.replace(/\r\n/g, "\n").split("\n");
   const htmlParts = [];
@@ -216,6 +317,7 @@ function renderMarkdown(md) {
     // fenced code block
     if (trimmed.startsWith("```")) {
       flush();
+      const lang = trimmed.slice(3).trim().split(/\s+/)[0].toLowerCase();
       const codeLines = [];
       i++;
       while (i < lines.length && !lines[i].trim().startsWith("```")) {
@@ -223,7 +325,12 @@ function renderMarkdown(md) {
         i++;
       }
       i++; // skip closing fence
-      htmlParts.push(`<pre><code>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
+      const rawBlock = codeLines.join("\n");
+      if (lang === "quiz") {
+        htmlParts.push(renderQuiz(rawBlock));
+        continue;
+      }
+      htmlParts.push(`<pre><code>${escapeHtml(rawBlock)}</code></pre>`);
       continue;
     }
 
@@ -1029,6 +1136,103 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 .site-footer a { color: var(--muted); }
 .site-footer a:hover { color: var(--accent); }
 
+/* --- コース --- */
+.cs-progress {
+  max-width: 760px; margin: 0 auto 2.5rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface);
+}
+.cs-bar { height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.cs-bar-fill { height: 100%; background: var(--accent); transition: width 0.3s ease; }
+.cs-progress-text { margin: 0.6rem 0 0; font-size: 0.85rem; font-weight: 700; }
+.cs-reset {
+  margin-top: 0.4rem; font: inherit; font-size: 0.76rem;
+  background: none; border: none; padding: 0;
+  color: var(--muted); text-decoration: underline; cursor: pointer;
+}
+.cs-chapter { max-width: 760px; margin: 0 auto 3rem; }
+.cs-summary { color: var(--muted); margin-bottom: 1.2rem; }
+.cs-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.cs-item a {
+  display: flex; align-items: center; gap: 0.9rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface);
+  text-decoration: none; color: inherit;
+}
+.cs-item a:hover { border-color: var(--accent); }
+.cs-n {
+  flex-shrink: 0; width: 1.9rem; height: 1.9rem;
+  display: grid; place-items: center; border-radius: 50%;
+  background: var(--surface-2); color: var(--muted);
+  font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
+}
+.cs-body { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; }
+.cs-title { font-weight: 700; }
+.cs-meta { font-size: 0.76rem; color: var(--muted); }
+.cs-check { flex-shrink: 0; width: 1.2rem; color: var(--accent); font-weight: 700; }
+.cs-item.is-done .cs-n { background: var(--accent); color: #fff; }
+.cs-item.is-done .cs-check::after { content: "✓"; }
+.cs-note {
+  max-width: 760px; margin: 0 auto; padding-bottom: 3rem;
+  font-size: 0.8rem; color: var(--muted);
+}
+
+/* --- 各回 --- */
+.lesson { max-width: 720px; margin: 0 auto; padding-top: 1.5rem; }
+.ls-crumb { font-size: 0.82rem; margin-bottom: 0.5rem; }
+.ls-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 2rem; }
+.ls-done { margin: 3rem 0 1rem; text-align: center; }
+.ls-done-btn {
+  font: inherit; font-weight: 700;
+  padding: 0.8rem 2rem;
+  border: 2px solid var(--accent); border-radius: 999px;
+  background: transparent; color: var(--accent); cursor: pointer;
+}
+.ls-done-btn.is-done { background: var(--accent); color: #fff; }
+.ls-done-note { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
+.ls-nav {
+  max-width: 720px; margin: 0 auto 4rem;
+  display: flex; justify-content: space-between; gap: 1rem;
+  font-size: 0.85rem;
+}
+.ls-nav a { max-width: 48%; }
+
+/* --- 確認問題 --- */
+.qz {
+  border: 2px solid var(--border); border-radius: 10px;
+  background: var(--surface); padding: 1.25rem; margin: 2rem 0;
+}
+.qz-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.8rem; }
+.qz-text { font-weight: 700; margin: 0 0 0.7rem; }
+.qz-num {
+  display: inline-block; margin-right: 0.5rem;
+  font-family: var(--font-display); color: var(--accent);
+}
+.qz-opts { display: grid; gap: 0.45rem; }
+.qz-opt {
+  font: inherit; text-align: left;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg); color: var(--fg); cursor: pointer;
+}
+.qz-opt:hover:not(:disabled) { border-color: var(--accent); }
+.qz-opt:disabled { cursor: default; }
+.qz-opt.is-correct { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.qz-opt.is-wrong { opacity: 0.55; text-decoration: line-through; }
+.qz-explain {
+  margin: 0.6rem 0 0; padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--surface-2);
+  font-size: 0.88rem; line-height: 1.8;
+}
+.qz-score {
+  margin: 1.5rem 0 0; padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center; font-family: var(--font-display); font-weight: 700;
+}
+
 .policy-page { max-width: 720px; margin: 0 auto; padding: 2rem 0 4rem; }
 .policy-page h1 { margin-bottom: 1.5rem; }
 .policy-page h2 { margin-top: 2.2rem; font-size: 1.15rem; }
@@ -1051,6 +1255,200 @@ function categoryChipClass(category) {
     hash = (hash * 31 + category.charCodeAt(i)) >>> 0;
   }
   return CATEGORY_CHIP_PALETTE[hash % CATEGORY_CHIP_PALETTE.length];
+}
+
+// ---------------------------------------------------------------------------
+// コース(eラーニング)
+// ---------------------------------------------------------------------------
+
+const COURSE_URL = `${CONFIG.baseUrl}${CONFIG.blogPath}/course/`;
+const lessonUrl = (slug) => `${COURSE_URL}${slug}/`;
+
+function loadCourse() {
+  const meta = readJson(path.join(AFFILIATE_DIR, "course.json"), null);
+  if (!meta) return null;
+  const dir = path.join(AFFILIATE_DIR, "course");
+  if (!fs.existsSync(dir)) return null;
+
+  const lessons = new Map();
+  for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".md"))) {
+    const raw = fs.readFileSync(path.join(dir, file), "utf8");
+    const { data, body } = parseFrontmatter(raw);
+    if (!data || !data.slug) throw new Error(`コース教材のfrontmatterが不正です: ${file}`);
+    lessons.set(data.slug, {
+      slug: data.slug,
+      title: data.title,
+      minutes: Number(data.minutes) || 5,
+      bodyHtml: renderMarkdown(body),
+    });
+  }
+
+  // course.json の並び順を正とし、全体を1本の連番に展開する。
+  const ordered = [];
+  for (const ch of meta.chapters) {
+    for (const slug of ch.lessons) {
+      const lesson = lessons.get(slug);
+      if (!lesson) throw new Error(`course.json が存在しない教材を参照しています: ${slug}`);
+      ordered.push({ ...lesson, chapter: ch });
+    }
+  }
+  return { meta, ordered };
+}
+
+// 進捗はlocalStorageに保存する。アカウント不要で、静的サイトのまま完結する。
+const COURSE_PROGRESS_JS = `
+(function () {
+  var KEY = "pl-course-done";
+  window.plCourse = {
+    read: function () {
+      try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+    },
+    write: function (v) {
+      try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {}
+    },
+  };
+})();
+`;
+
+function renderCourseIndex(course) {
+  const { meta, ordered } = course;
+  const chapters = meta.chapters
+    .map((ch) => {
+      const items = ch.lessons
+        .map((slug, i) => {
+          const l = ordered.find((x) => x.slug === slug);
+          const n = ordered.indexOf(l) + 1;
+          return `
+        <li class="cs-item" data-slug="${escapeHtml(slug)}">
+          <a href="${lessonUrl(slug)}">
+            <span class="cs-n">${n}</span>
+            <span class="cs-body">
+              <span class="cs-title">${escapeHtml(l.title)}</span>
+              <span class="cs-meta">約${l.minutes}分</span>
+            </span>
+            <span class="cs-check" aria-hidden="true"></span>
+          </a>
+        </li>`;
+        })
+        .join("");
+      return `
+    <section class="cs-chapter">
+      <h2>${escapeHtml(ch.title)}</h2>
+      <p class="cs-summary">${escapeHtml(ch.summary)}</p>
+      <ol class="cs-list">${items}</ol>
+    </section>`;
+    })
+    .join("");
+
+  const body = `
+<main>
+  <section class="hero hero-sub">
+    <h1>${escapeHtml(meta.title)}</h1>
+    <p class="hero-lead">${escapeHtml(meta.lead)}</p>
+  </section>
+
+  <div class="cs-progress" id="cs-progress" hidden>
+    <div class="cs-bar"><div class="cs-bar-fill" id="cs-bar-fill"></div></div>
+    <p class="cs-progress-text" id="cs-progress-text"></p>
+    <button type="button" class="cs-reset" id="cs-reset">進捗を消す</button>
+  </div>
+
+  ${chapters}
+
+  <p class="cs-note">${escapeHtml(meta.note)}</p>
+</main>`;
+
+  const extraJs = `
+${COURSE_PROGRESS_JS}
+(function () {
+  var done = window.plCourse.read();
+  var items = document.querySelectorAll(".cs-item");
+  var total = items.length, n = 0;
+  items.forEach(function (li) {
+    if (done[li.dataset.slug]) { li.classList.add("is-done"); n++; }
+  });
+  var wrap = document.getElementById("cs-progress");
+  if (n > 0) {
+    wrap.hidden = false;
+    document.getElementById("cs-bar-fill").style.width = Math.round((n / total) * 100) + "%";
+    document.getElementById("cs-progress-text").textContent = total + "回中 " + n + "回を完了";
+  }
+  document.getElementById("cs-reset").addEventListener("click", function () {
+    window.plCourse.write({});
+    location.reload();
+  });
+})();`;
+
+  return pageShell({
+    title: meta.title,
+    description: meta.lead.slice(0, 120),
+    canonical: COURSE_URL,
+    ogType: "website",
+    bodyHtml: body + `\n<script>${extraJs}</script>`,
+    jsonLd: { "@context": "https://schema.org", "@type": "Course", name: meta.title, description: meta.lead, provider: { "@type": "Organization", name: CONFIG.siteName } },
+    showDisclosure: false,
+  });
+}
+
+function renderLessonPage(lesson, index, ordered) {
+  const prev = index > 0 ? ordered[index - 1] : null;
+  const next = index < ordered.length - 1 ? ordered[index + 1] : null;
+
+  const nav = `
+  <nav class="ls-nav">
+    ${prev ? `<a class="ls-prev" href="${lessonUrl(prev.slug)}">← ${escapeHtml(prev.title)}</a>` : `<a class="ls-prev" href="${COURSE_URL}">← コース目次</a>`}
+    ${next ? `<a class="ls-next" href="${lessonUrl(next.slug)}">${escapeHtml(next.title)} →</a>` : `<a class="ls-next" href="${COURSE_URL}">コース目次へ戻る →</a>`}
+  </nav>`;
+
+  const body = `
+<main>
+  <article class="lesson">
+    <p class="ls-crumb"><a href="${COURSE_URL}">${escapeHtml(lesson.chapter.title)}</a></p>
+    <h1>${escapeHtml(lesson.title)}</h1>
+    <p class="ls-meta">第${index + 1}回 / 全${ordered.length}回　約${lesson.minutes}分</p>
+    ${lesson.bodyHtml}
+
+    <div class="ls-done">
+      <button type="button" class="ls-done-btn" id="ls-done">この回を完了にする</button>
+      <p class="ls-done-note">進捗はこのブラウザにのみ保存されます</p>
+    </div>
+  </article>
+  ${nav}
+</main>`;
+
+  const extraJs = `
+${COURSE_PROGRESS_JS}
+(function () {
+  var SLUG = ${JSON.stringify(lesson.slug)};
+  var btn = document.getElementById("ls-done");
+  function paint() {
+    var done = window.plCourse.read();
+    if (done[SLUG]) {
+      btn.textContent = "完了ずみ（クリックで取り消す）";
+      btn.classList.add("is-done");
+    } else {
+      btn.textContent = "この回を完了にする";
+      btn.classList.remove("is-done");
+    }
+  }
+  btn.addEventListener("click", function () {
+    var done = window.plCourse.read();
+    if (done[SLUG]) { delete done[SLUG]; } else { done[SLUG] = true; }
+    window.plCourse.write(done);
+    paint();
+  });
+  paint();
+})();`;
+
+  return pageShell({
+    title: lesson.title,
+    description: `${lesson.chapter.title}の第${index + 1}回。${lesson.title}について、確認問題つきで解説します。`,
+    canonical: lessonUrl(lesson.slug),
+    ogType: "article",
+    bodyHtml: body + `\n<script>${extraJs}</script>`,
+    jsonLd: { "@context": "https://schema.org", "@type": "LearningResource", name: lesson.title, url: lessonUrl(lesson.slug), isPartOf: { "@type": "Course", name: "生成AI 実践コース", url: COURSE_URL } },
+    showDisclosure: lesson.bodyHtml.includes("aff-btn"),
+  });
 }
 
 function renderPolicyPages() {
@@ -1191,6 +1589,7 @@ ${OGP_IMAGE_URL ? `<meta name="twitter:image" content="${OGP_IMAGE_URL}">\n` : "
     </a>
     <nav>
       <a href="${BLOG_INDEX_URL}">記事一覧</a>
+      <a class="nav-cta" href="${COURSE_URL}">講座で学ぶ</a>
     </nav>
   </div>
 </header>
@@ -1347,6 +1746,12 @@ ${items}
 `;
 }
 
+function courseUrlsForSitemap() {
+  const course = loadCourse();
+  if (!course) return [];
+  return [{ loc: COURSE_URL }, ...course.ordered.map((l) => ({ loc: lessonUrl(l.slug) }))];
+}
+
 function renderSitemap(articles) {
   const urls = [
     { loc: SITE_ROOT_URL },
@@ -1354,6 +1759,7 @@ function renderSitemap(articles) {
     { loc: PRIVACY_URL },
     { loc: ABOUT_URL },
     { loc: CONTACT_URL },
+    ...(courseUrlsForSitemap() || []),
     ...articles.map((a) => ({ loc: articleUrl(a.slug), lastmod: a.date })),
   ];
   const entries = urls
@@ -1400,6 +1806,18 @@ function build() {
   }
 
   writeFile(path.join(BLOG_OUT_DIR, "index.html"), renderBlogIndex(articles));
+
+  const course = loadCourse();
+  if (course) {
+    writeFile(path.join(BLOG_OUT_DIR, "course", "index.html"), renderCourseIndex(course));
+    course.ordered.forEach((lesson, i) => {
+      writeFile(
+        path.join(BLOG_OUT_DIR, "course", lesson.slug, "index.html"),
+        renderLessonPage(lesson, i, course.ordered),
+      );
+    });
+    console.log(`[build] course: ${course.ordered.length} lesson(s)`);
+  }
 
   const policy = renderPolicyPages();
   writeFile(path.join(BLOG_OUT_DIR, "privacy", "index.html"), policy.privacy);
