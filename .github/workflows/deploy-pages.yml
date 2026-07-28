@@ -25,6 +25,11 @@ jobs:
         with:
           node-version: "20"
 
+      # 誇大表現・捏造URL・成果の保証などを検出する。ERRORが1件でもあれば
+      # 公開せずにここで止める(WARNは人の目視確認用なので落とさない)。
+      - name: Lint content
+        run: node affiliate/lint.mjs
+
       - name: Build site
         run: node affiliate/build.mjs
 

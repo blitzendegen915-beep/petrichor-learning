@@ -38,6 +38,13 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node affiliate/generate-article.mjs
 
+      # 生成物をcommitする前に必ず通す。捏造URL・誇大表現・成果保証などが
+      # あればERRORで落ち、記事はpushされない。
+      # これがないと、生成AIが作った誤りがそのまま自動公開される。
+      - name: Lint generated article
+        if: steps.check-key.outputs.skip == 'false'
+        run: node affiliate/lint.mjs
+
       - name: Commit and push new article
         if: steps.check-key.outputs.skip == 'false'
         run: |
