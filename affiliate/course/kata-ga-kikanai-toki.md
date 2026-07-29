@@ -69,6 +69,27 @@ minutes: 8
 
 **指示の工夫で解決できるのは「伝わっていない問題」だけ**です。「AIが知らない・確かめられない問題」は、指示では解決しません。ここを混同すると、無駄な時間を使います。
 
+```svg 指示で直せる問題と、直せない問題は別物
+<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>指示で解決できる問題とできない問題</title>
+  <rect x="30" y="30" width="270" height="140" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+  <text x="165" y="60" text-anchor="middle" font-size="14" fill="var(--fg)">伝わっていない問題</text>
+  <text x="165" y="88" text-anchor="middle" font-size="12" fill="var(--muted)">前提を渡していない</text>
+  <text x="165" y="110" text-anchor="middle" font-size="12" fill="var(--muted)">形を指定していない</text>
+  <text x="165" y="132" text-anchor="middle" font-size="12" fill="var(--muted)">目的が曖昧</text>
+  <text x="165" y="158" text-anchor="middle" font-size="13" fill="var(--accent)">指示で直せる</text>
+
+  <rect x="340" y="30" width="270" height="140" rx="8" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
+  <text x="475" y="60" text-anchor="middle" font-size="14" fill="var(--fg)">確かめられない問題</text>
+  <text x="475" y="88" text-anchor="middle" font-size="12" fill="var(--muted)">事実を知らない</text>
+  <text x="475" y="110" text-anchor="middle" font-size="12" fill="var(--muted)">最新の情報がない</text>
+  <text x="475" y="132" text-anchor="middle" font-size="12" fill="var(--muted)">正誤を判定できない</text>
+  <text x="475" y="158" text-anchor="middle" font-size="13" fill="var(--fg)">指示では直せない</text>
+
+  <text x="320" y="200" text-anchor="middle" font-size="12" fill="var(--muted)">右側に「正確に答えて」と書き足しても解決しない。確認するしかない</text>
+</svg>
+```
+
 ## 第2章のまとめ
 
 - 具体的な指示が効くのは、次の語を選ぶ手がかりが増えるから
