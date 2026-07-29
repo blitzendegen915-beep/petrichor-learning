@@ -22,10 +22,15 @@ jobs:
         with:
           node-version: "20"
 
+      # secretは env 経由でのみ渡す。${{ }} でrun内に直接書くと、展開後の値が
+      # ランナー上のシェルスクリプトに実体として書き込まれる。値に記号が
+      # 含まれていればコマンドとして解釈される余地も残る。
       - name: Check for API key
         id: check-key
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
             echo "ANTHROPIC_API_KEY is not set — skipping article generation."
             echo "skip=true" >> "$GITHUB_OUTPUT"
           else
