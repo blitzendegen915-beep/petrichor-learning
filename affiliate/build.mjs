@@ -40,6 +40,12 @@ const CONFIG = readJson(path.join(AFFILIATE_DIR, "site.config.json"), {
 
 const LINKS = readJson(path.join(AFFILIATE_DIR, "links.json"), {});
 
+// 同じ記事が petrichot.com/learning/ にも存在する(2026-07-31に同一ドメインへ統合済み)。
+// 重複コンテンツとして双方の評価が下がるのを避けるため、canonicalは統合先を正とする。
+// このサイト自体は既存の被リンク・ブックマークのために残す。
+const CANONICAL_HOME = "https://petrichot.com/learning";
+const toCanonicalHome = (url) => url.replace(CONFIG.baseUrl, CANONICAL_HOME);
+
 const SITE_ROOT_URL = `${CONFIG.baseUrl}/`;
 const BLOG_INDEX_URL = `${CONFIG.baseUrl}${CONFIG.blogPath}/`;
 const BLOG_OUT_DIR = path.join(DIST_DIR, ...CONFIG.blogPath.split("/").filter(Boolean));
@@ -1908,7 +1914,7 @@ ${CSP_META}
 ${HAS_FAVICON ? `<link rel="icon" href="${CONFIG.baseUrl}/static/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="${CONFIG.baseUrl}/static/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="${CONFIG.baseUrl}/static/apple-touch-icon.png">
-` : ""}<link rel="canonical" href="${canonical}">
+` : ""}<link rel="canonical" href="${toCanonicalHome(canonical)}">
 <meta property="og:title" content="${escapeHtml(title)}">
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta property="og:type" content="${ogType}">
