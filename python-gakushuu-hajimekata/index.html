@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="base-uri 'none'; object-src 'none'; form-action 'self'">
+<title>Python学習の始め方｜最初の3ヶ月でやること | ペトリコール・ラーニング</title>
+<meta name="description" content="Python初心者向けの実践的な学習ガイド。環境構築からライブラリまで、最初の3ヶ月で習得すべき内容を段階的に解説します。">
+<link rel="icon" href="https://blitzendegen915-beep.github.io/petrichor-learning/static/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://blitzendegen915-beep.github.io/petrichor-learning/static/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="https://blitzendegen915-beep.github.io/petrichor-learning/static/apple-touch-icon.png">
+<link rel="canonical" href="https://petrichot.com/learning/python-gakushuu-hajimekata/">
+<meta property="og:title" content="Python学習の始め方｜最初の3ヶ月でやること">
+<meta property="og:description" content="Python初心者向けの実践的な学習ガイド。環境構築からライブラリまで、最初の3ヶ月で習得すべき内容を段階的に解説します。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blitzendegen915-beep.github.io/petrichor-learning/python-gakushuu-hajimekata/">
+<meta property="og:site_name" content="ペトリコール・ラーニング">
+<meta property="og:image" content="https://blitzendegen915-beep.github.io/petrichor-learning/static/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Python学習の始め方｜最初の3ヶ月でやること">
+<meta name="twitter:description" content="Python初心者向けの実践的な学習ガイド。環境構築からライブラリまで、最初の3ヶ月で習得すべき内容を段階的に解説します。">
+<meta name="twitter:image" content="https://blitzendegen915-beep.github.io/petrichor-learning/static/ogp.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Python学習の始め方｜最初の3ヶ月でやること","description":"Python初心者向けの実践的な学習ガイド。環境構築からライブラリまで、最初の3ヶ月で習得すべき内容を段階的に解説します。","datePublished":"2026-07-19","author":{"@type":"Organization","name":"ペトリコール・ラーニング編集部"},"publisher":{"@type":"Organization","name":"ペトリコール・ラーニング"},"mainEntityOfPage":"https://blitzendegen915-beep.github.io/petrichor-learning/python-gakushuu-hajimekata/"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f7f3ea;
+  --surface: #ffffff;
+  --surface-2: #efe8d8;
+  --fg: #18140f;
+  --muted: #6b6357;
+  --accent: #ff4d23;
+  --accent-fg: #17130d;
+  --accent-soft: #ffe1d2;
+  --edu: #0f8f72;
+  --edu-fg: #ffffff;
+  --edu-soft: #d7f2e9;
+  --border: #e6dfcf;
+  --code-bg: #efe7d6;
+  --banner-bg: #fff1cf;
+  --banner-fg: #6b4a00;
+  --banner-border: #ecd79a;
+  --header-bg: rgba(247, 243, 234, 0.86);
+  --shadow: 0 10px 30px -12px rgba(24, 20, 15, 0.28);
+  --measure: 68ch;
+  --wide: 960px;
+  --eye-edu: var(--edu);
+  --eye-edu-soft: var(--edu-soft);
+  --eye-a: #0b5e8c;
+  --eye-a-soft: #dff0ff;
+  --eye-b: #7a5400;
+  --eye-b-soft: #fff0cf;
+  --eye-c: #a3213f;
+  --eye-c-soft: #ffe1e6;
+  --eye-d: #4c6a1f;
+  --eye-d-soft: #e6efd2;
+  --eye-e: #7a4420;
+  --eye-e-soft: #f0ded0;
+  --font-display: "Space Grotesk", "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+  --font-body: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0d0b;
+    --surface: #17191a;
+    --surface-2: #1f2221;
+    --fg: #f2ede2;
+    --muted: #a29a8b;
+    --accent: #ff7a4a;
+    --accent-fg: #0c0d0b;
+    --accent-soft: #3a2015;
+    --edu: #2fe3ac;
+    --edu-fg: #06231a;
+    --edu-soft: #123328;
+    --border: #2a2c2a;
+    --code-bg: #1c1e1d;
+    --banner-bg: #2c2308;
+    --banner-fg: #f2d886;
+    --banner-border: #4c3d10;
+    --header-bg: rgba(12, 13, 11, 0.82);
+    --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+    --eye-a: #7ecbff;
+    --eye-a-soft: #10314a;
+    --eye-b: #ffd873;
+    --eye-b-soft: #3a2c05;
+    --eye-c: #ff9db3;
+    --eye-c-soft: #3a1420;
+    --eye-d: #b7d67f;
+    --eye-d-soft: #26310f;
+    --eye-e: #e3b98a;
+    --eye-e-soft: #3a2818;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  line-height: 1.9;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::selection { background: var(--accent); color: #fff; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+img { max-width: 100%; height: auto; display: block; }
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--header-bg);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.9rem 1.25rem;
+}
+.site-header .inner {
+  max-width: var(--wide);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--fg);
+  min-width: 0;
+}
+.brand-mark {
+  flex-shrink: 0;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--edu) 100%);
+  transform: rotate(-8deg);
+  box-shadow: var(--shadow);
+}
+.brand-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.18rem;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.site-header nav a {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--muted);
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.42rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+.site-header nav a:hover,
+.site-header nav a:focus-visible {
+  color: var(--accent);
+  border-color: var(--border);
+  background: var(--surface);
+}
+
+.disclosure-banner {
+  max-width: var(--wide);
+  margin: 1rem auto 0;
+  padding: 0.65rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: var(--banner-bg);
+  color: var(--banner-fg);
+  border: 1px solid var(--banner-border);
+  border-radius: 10px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+.disclosure-badge {
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: var(--banner-fg);
+  color: var(--banner-bg);
+  margin-top: 0.1rem;
+}
+
+main {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+main.wide { max-width: var(--wide); }
+
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 1.2rem + 1.4vw, 2.15rem);
+  line-height: 1.45;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  margin: 0.6rem 0 1.1rem;
+}
+article { counter-reset: h2count; }
+h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 2.75rem 0 1.15rem;
+  padding-left: 0.85rem;
+  border-left: 4px solid var(--accent);
+}
+article h2::before {
+  counter-increment: h2count;
+  content: counter(h2count, decimal-leading-zero) " / ";
+  color: var(--accent);
+  opacity: 0.6;
+  font-size: 0.75em;
+  letter-spacing: 0.03em;
+}
+h3 {
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 700;
+  margin-top: 1.8rem;
+}
+p { margin: 0 0 1.15rem; }
+ul, ol { margin: 0 0 1.2rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.5rem; }
+ul > li::marker { color: var(--accent); }
+ol > li::marker { color: var(--accent); font-family: var(--font-display); font-weight: 700; }
+blockquote {
+  position: relative;
+  margin: 1.6rem 0;
+  padding: 0.9rem 1.2rem 0.9rem 1.4rem;
+  border-left: 4px solid var(--edu);
+  color: var(--muted);
+  background: var(--surface);
+  border-radius: 0 10px 10px 0;
+  font-style: italic;
+}
+blockquote p { margin: 0; }
+code {
+  background: var(--code-bg);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.4rem 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+.table-wrap th, .table-wrap td {
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.table-wrap td { white-space: normal; min-width: 8em; }
+.table-wrap thead th {
+  background: var(--card-bg);
+  font-weight: 700;
+  border-bottom: 2px solid var(--accent);
+}
+.table-wrap tbody tr:last-child td { border-bottom: none; }
+
+pre {
+  background: var(--code-bg);
+  padding: 1rem;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+pre code { background: none; padding: 0; }
+hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.chip-tag { background: var(--surface-2); color: var(--muted); }
+.chip-cat { font-weight: 700; }
+.chip-edu { background: var(--edu-soft); color: var(--edu); }
+.chip-a { background: #dff0ff; color: #0b5e8c; }
+.chip-b { background: #fff0cf; color: #7a5400; }
+.chip-c { background: #ffe1e6; color: #a3213f; }
+.chip-d { background: #e6efd2; color: #4c6a1f; }
+.chip-e { background: #f0ded0; color: #7a4420; }
+@media (prefers-color-scheme: dark) {
+  .chip-a { background: #10314a; color: #7ecbff; }
+  .chip-b { background: #3a2c05; color: #ffd873; }
+  .chip-c { background: #3a1420; color: #ff9db3; }
+  .chip-d { background: #26310f; color: #b7d67f; }
+  .chip-e { background: #3a2818; color: #e3b98a; }
+}
+
+.article-meta {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.article-meta time { font-family: var(--font-display); font-weight: 600; }
+
+.eyecatch-hero {
+  width: 100%;
+  height: clamp(120px, 26vw, 220px);
+  max-height: 220px;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  margin: 0 0 2.2rem;
+}
+
+.sources {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.sources h2 {
+  font-size: 1.05rem;
+  margin: 0 0 1rem;
+}
+.sources ul { padding-left: 1.3rem; }
+.sources li { margin-bottom: 0.5rem; }
+.sources a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 0.15em;
+}
+.sources a:hover, .sources a:focus-visible { color: var(--accent); }
+.sources a[target="_blank"]::after {
+  content: "\2197";
+  display: inline-block;
+  margin-left: 0.3em;
+  font-size: 0.85em;
+  opacity: 0.65;
+}
+
+.aff-cta {
+  margin: 2rem 0;
+  text-align: center;
+}
+.aff-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: var(--accent);
+  color: var(--accent-fg) !important;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  padding: 1rem 2.25rem;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.aff-btn::after { content: "\2192"; transition: transform 0.18s ease; }
+.aff-btn:hover, .aff-btn:focus-visible {
+  transform: translateY(-3px);
+  filter: brightness(1.05);
+  box-shadow: 0 18px 34px -14px var(--accent);
+}
+.aff-btn:hover::after { transform: translateX(3px); }
+.aff-btn:active { transform: translateY(-1px); }
+
+.article-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+@media (min-width: 700px) {
+  .article-grid { grid-template-columns: 1fr 1fr; }
+}
+.article-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  overflow: hidden;
+}
+.article-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: var(--accent);
+}
+.article-card .card-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--fg);
+  height: 100%;
+}
+.card-eyecatch {
+  width: 100%;
+  height: 132px;
+  overflow: hidden;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.card-eyecatch .eyecatch-svg,
+.eyecatch-hero .eyecatch-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.article-card:hover .card-eyecatch .eyecatch-svg { transform: scale(1.03); }
+.card-eyecatch .eyecatch-svg { transition: transform 0.3s ease; }
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.1rem 1.4rem 1.5rem;
+  flex: 1;
+}
+.article-card .card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+.article-card .card-date {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.article-card h2 {
+  font-size: 1.15rem;
+  border: none;
+  padding: 0;
+  margin: 0.2rem 0 0;
+  line-height: 1.55;
+}
+.article-card h2::before { content: none; }
+.article-card .desc {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.75;
+  margin: 0;
+}
+.empty-state {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  padding: 2rem 0;
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  margin-top: 4rem;
+  padding: 2rem 1.25rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.site-footer .inner { max-width: var(--wide); margin: 0 auto; }
+.site-footer p { margin: 0.35rem 0; }
+.site-footer a { color: var(--muted); }
+.site-footer a:hover { color: var(--accent); }
+
+.pb {
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface);
+  padding: 1.25rem;
+  margin: 2rem 0;
+}
+.pb-head { display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 1rem; }
+.pb-head strong { font-family: var(--font-display); font-size: 1.02rem; }
+.pb-note { font-size: 0.76rem; color: var(--muted); }
+.pb-presets {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+.pb-presets-label { font-size: 0.8rem; color: var(--muted); }
+.pb-preset {
+  font: inherit; font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+.pb-preset:hover { background: var(--accent-soft); }
+.pb-grid { display: grid; gap: 0.85rem; }
+@media (min-width: 640px) { .pb-grid { grid-template-columns: 1fr 1fr; } }
+.pb-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.pb-label { font-size: 0.82rem; font-weight: 700; }
+.pb-field textarea {
+  font: inherit; font-size: 0.9rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--bg);
+  color: var(--fg);
+  resize: vertical;
+}
+.pb-field textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.pb-out-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 1.15rem 0 0.4rem;
+  font-size: 0.82rem; font-weight: 700;
+}
+.pb-copy {
+  font: inherit; font-size: 0.78rem; font-weight: 700;
+  padding: 0.3rem 0.9rem;
+  border: none; border-radius: var(--r);
+  background: var(--accent); color: var(--accent-fg);
+  cursor: pointer;
+}
+.pb-out {
+  white-space: pre-wrap; word-break: break-word;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 0.85rem;
+  font-size: 0.88rem;
+  line-height: 1.75;
+  margin: 0;
+}
+.pb-out.is-empty { color: var(--muted); }
+
+/* --- コース --- */
+.cs-progress {
+  max-width: 760px; margin: 0 auto 2.5rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface);
+}
+.cs-rank { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+.cs-rank-badge {
+  font-family: var(--font-display); font-weight: 700; font-size: 0.9rem;
+  padding: 0.28rem 0.95rem; border-radius: 999px;
+  background: var(--accent); color: #fff;
+}
+.cs-rank-note { font-size: 0.82rem; color: var(--muted); }
+.cs-next-rank { margin: 0.3rem 0 0; font-size: 0.78rem; color: var(--accent); font-weight: 700; }
+.cs-bar { height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.cs-bar-fill { height: 100%; background: var(--accent); transition: width 0.3s ease; }
+.cs-progress-text { margin: 0.6rem 0 0; font-size: 0.85rem; font-weight: 700; }
+.cs-reset {
+  margin-top: 0.4rem; font: inherit; font-size: 0.76rem;
+  background: none; border: none; padding: 0;
+  color: var(--muted); text-decoration: underline; cursor: pointer;
+}
+.cs-chapter { max-width: 760px; margin: 0 auto 3rem; }
+.cs-summary { color: var(--muted); margin-bottom: 1.2rem; }
+.cs-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.cs-item a {
+  display: flex; align-items: center; gap: 0.9rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface);
+  text-decoration: none; color: inherit;
+}
+.cs-item a:hover { border-color: var(--accent); }
+.cs-n {
+  flex-shrink: 0; width: 1.9rem; height: 1.9rem;
+  display: grid; place-items: center; border-radius: 50%;
+  background: var(--surface-2); color: var(--muted);
+  font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
+}
+.cs-body { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; }
+.cs-title { font-weight: 700; }
+.cs-meta { font-size: 0.76rem; color: var(--muted); }
+.cs-check { flex-shrink: 0; width: 1.2rem; color: var(--accent); font-weight: 700; }
+.cs-item.is-done .cs-n { background: var(--accent); color: #fff; }
+.cs-item.is-done .cs-check::after { content: "✓"; }
+.cs-note {
+  max-width: 760px; margin: 0 auto; padding-bottom: 3rem;
+  font-size: 0.8rem; color: var(--muted);
+}
+
+/* --- 各回 --- */
+.lesson { max-width: 720px; margin: 0 auto; padding-top: 1.5rem; }
+.ls-crumb { font-size: 0.82rem; margin-bottom: 0.5rem; }
+.ls-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 2rem; }
+.ls-done { margin: 3rem 0 1rem; text-align: center; }
+.ls-done-btn {
+  font: inherit; font-weight: 700;
+  padding: 0.8rem 2rem;
+  border: 2px solid var(--accent); border-radius: 999px;
+  background: transparent; color: var(--accent); cursor: pointer;
+}
+.ls-done-btn.is-done { background: var(--accent); color: #fff; }
+.ls-done-btn:disabled { border-color: var(--border); color: var(--muted); cursor: not-allowed; }
+.ls-done-note { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
+.ls-nav {
+  max-width: 720px; margin: 0 auto 4rem;
+  display: flex; justify-content: space-between; gap: 1rem;
+  font-size: 0.85rem;
+}
+.ls-nav a { max-width: 48%; }
+
+/* --- 確認問題 --- */
+.qz {
+  border: 2px solid var(--border); border-radius: 10px;
+  background: var(--surface); padding: 1.25rem; margin: 2rem 0;
+}
+.qz-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.8rem; }
+.qz-text { font-weight: 700; margin: 0 0 0.7rem; }
+.qz-num {
+  display: inline-block; margin-right: 0.5rem;
+  font-family: var(--font-display); color: var(--accent);
+}
+.qz-opts { display: grid; gap: 0.45rem; }
+.qz-opt {
+  font: inherit; text-align: left;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg); color: var(--fg); cursor: pointer;
+}
+.qz-opt:hover:not(:disabled) { border-color: var(--accent); }
+.qz-opt:disabled { cursor: default; }
+.qz-opt.is-correct { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.qz-opt.is-wrong { opacity: 0.55; text-decoration: line-through; }
+.qz-explain {
+  margin: 0.6rem 0 0; padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--surface-2);
+  font-size: 0.88rem; line-height: 1.8;
+}
+.qz-score {
+  margin: 1.5rem 0 0; padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center; font-family: var(--font-display); font-weight: 700;
+}
+.qz-actions { margin: 0.7rem 0 0; text-align: center; }
+.qz-retry {
+  font: inherit; font-size: 0.8rem;
+  background: none; border: none; padding: 0;
+  color: var(--muted); text-decoration: underline; cursor: pointer;
+}
+.qz-retry:hover { color: var(--accent); }
+
+figure.diagram { margin: 2rem 0; }
+figure.diagram svg { width: 100%; height: auto; display: block; }
+figure.diagram figcaption {
+  margin-top: 0.6rem; font-size: 0.8rem; color: var(--muted); text-align: center;
+}
+
+.policy-page { max-width: 720px; margin: 0 auto; padding: 2rem 0 4rem; }
+.policy-page h1 { margin-bottom: 1.5rem; }
+.policy-page h2 { margin-top: 2.2rem; font-size: 1.15rem; }
+.policy-page p, .policy-page li { color: var(--muted); line-height: 1.9; }
+
+.site-footer .footer-disclosure {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--fg);
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="https://blitzendegen915-beep.github.io/petrichor-learning/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">ペトリコール・ラーニング</span>
+    </a>
+    <nav>
+      <a href="https://blitzendegen915-beep.github.io/petrichor-learning/">記事一覧</a>
+      <a class="nav-cta" href="https://blitzendegen915-beep.github.io/petrichor-learning/course/">講座で学ぶ</a>
+    </nav>
+  </div>
+</header>
+<div class="disclosure-banner"><span class="disclosure-badge">PR</span><span>※本記事にはプロモーション(アフィリエイト広告)が含まれています。</span></div>
+
+<main>
+  <article>
+    <h1>Python学習の始め方｜最初の3ヶ月でやること</h1>
+    <div class="article-meta">
+      <time datetime="2026-07-19">2026-07-19</time>
+      <span class="chip chip-cat chip-a">学習ロードマップ</span>
+      <span class="chip chip-tag">Python</span><span class="chip chip-tag">学習</span><span class="chip chip-tag">プログラミング</span>
+    </div>
+    <div class="eyecatch-hero"><svg class="eyecatch-svg" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="200" fill="var(--eye-a-soft)"/><circle cx="31.8" cy="99.8" r="20.0" fill="none" stroke="var(--eye-a)" stroke-width="2.5" stroke-opacity="0.35"/><circle cx="31.8" cy="99.8" r="39.2" fill="none" stroke="var(--eye-a)" stroke-width="2.5" stroke-opacity="0.30"/><circle cx="31.8" cy="99.8" r="59.6" fill="none" stroke="var(--eye-a)" stroke-width="2.5" stroke-opacity="0.25"/><circle cx="31.8" cy="99.8" r="100.9" fill="none" stroke="var(--eye-a)" stroke-width="2.5" stroke-opacity="0.20"/><circle cx="31.8" cy="99.8" r="120.6" fill="none" stroke="var(--eye-a)" stroke-width="2.5" stroke-opacity="0.15"/></svg></div>
+    <p>Pythonはプログラミング初心者にとって最も学びやすい言語の一つです。AI、データ分析、Webアプリケーション開発など、多岐にわたる分野で活用されているため、Pythonをマスターすることで、キャリアの選択肢が大きく広がります。このガイドでは、Python学習の最初の3ヶ月間で何をすべきかを、具体的に解説します。</p>
+<h2>第1ヶ月：環境構築と基本文法</h2>
+<p>多くの初心者がつまずくのが環境構築です。しかし、適切なツールを選べば、この段階を最小限の時間で乗り切ることができます。</p>
+<h3>環境構築でつまずかないコツ</h3>
+<p><strong>ローカル開発環境の構築を後回しに</strong></p>
+<p>最初からPythonをパソコンにインストールして設定するのは、初心者にとって難しく感じられることが多いです。その代わり、オンラインコーディング環境を活用することをお勧めします。GoogleのColaboratoryやRepl.itなど、ブラウザだけで始められるサービスがあります。</p>
+<p>これらのツールを使えば、セットアップ時間をほぼゼロにでき、すぐにコーディング練習に入れます。</p>
+<p><strong>学習の流れ</strong></p>
+<ol><li>オンライン環境を使って基本文法を学ぶ（2週間）</li><li>簡単なプログラムを5〜10個書く（1週間）</li><li>ローカル環境が必要になったら、その時に構築（1週間）</li></ol>
+<p>このアプローチなら、環境構築に余計な時間を費やさずに、プログラミング学習に集中できます。</p>
+<h3>第1ヶ月の学習内容</h3>
+<ul><li>print文と変数の基本</li><li>整数型、浮動小数点型、文字列型などデータ型の理解</li><li>リストと辞書の基本操作</li><li>if文による条件分岐</li><li>for文とwhile文によるループ処理</li><li>関数の定義と呼び出し</li></ul>
+<p>第1ヶ月の目標は「基本的な制御フローを理解し、簡単なプログラムを自分で書けるようになる」ことです。</p>
+<div class="aff-cta"><a class="aff-btn" href="https://prog-8.com/" rel="sponsored nofollow noopener" target="_blank">Progate 公式サイトはこちら</a></div>
+<h2>第2ヶ月：実用的なライブラリと小規模プロジェクト</h2>
+<p>基本文法がわかったら、次のステップはPythonの実用的なライブラリを学ぶ段階です。</p>
+<h3>重要なライブラリ</h3>
+<div class="table-wrap"><table><thead><tr><th>ライブラリ名</th><th>用途</th><th>優先度</th></tr></thead><tbody><tr><td>NumPy</td><td>数値計算</td><td>高</td></tr><tr><td>Pandas</td><td>データ処理・分析</td><td>高</td></tr><tr><td>Matplotlib</td><td>データ可視化</td><td>中</td></tr><tr><td>Requests</td><td>Webスクレイピング</td><td>中</td></tr><tr><td>Flask</td><td>Webアプリケーション開発</td><td>低</td></tr></tbody></table></div>
+<p>優先度の高いものから順に学習を進めましょう。すべてを同時に学ぶ必要はありません。</p>
+<h3>小規模プロジェクトの実施</h3>
+<p>第2ヶ月の後半は、実際に「何か作る」経験をしてください。例えば：</p>
+<ul><li>CSVファイルのデータ処理プログラム</li><li>Webサイトから情報を取得するスクレイピング</li><li>シンプルな計算ツール</li></ul>
+<p>プロジェクトを通じて、実務的な問題解決能力が身につきます。</p>
+<h2>第3ヶ月：ポートフォリオ作成と発展学習</h2>
+<p>3ヶ月目は、それまでの学習成果をポートフォリオとしてまとめる時期です。</p>
+<h3>ポートフォリオに含めるべき要素</h3>
+<ul><li><strong>プロジェクトコード</strong>：GitHubに公開</li><li><strong>README</strong>：何をするプログラムか、どう実行するか明記</li><li><strong>処理の説明</strong>：どの部分にこだわったか</li><li><strong>実行結果</strong>：プログラムの成果物</li></ul>
+<p>良いポートフォリオは、エンジニア転職やフリーランス活動の強力なアピール材料になります。質よりも、「実際に動作するプロジェクトを作った経験」が重要です。</p>
+<div class="aff-cta"><a class="aff-btn" href="https://dotinstall.com/" rel="sponsored nofollow noopener" target="_blank">ドットインストール 公式サイトはこちら</a></div>
+<h3>発展学習への道</h3>
+<p>3ヶ月で基礎が定着したら、次のステップへ進めます。</p>
+<p><strong>進路の選択肢</strong></p>
+<ul><li>Webアプリケーション開発（Django、Flask）</li><li>データ分析・AI（機械学習、深層学習）</li><li>自動化スクリプト（定時ジョブ、ロボットプロセスオートメーション）</li><li>クラウド技術との組み合わせ</li></ul>
+<p>自分の興味と市場ニーズを勘案して、進路を決めるとモチベーション維持につながります。</p>
+<h2>無料教材から始める流れ</h2>
+<p>プログラミング学習に大きな金銭投資は不要です。質の良い無料教材が豊富にあります。</p>
+<h3>オススメの無料教材</h3>
+<ul><li>オンラインコーディング環境：Google Colab</li><li>基本文法学習：公式チュートリアル、YouTubeの入門講座</li><li>ライブラリ学習：公式ドキュメント、オンライン講座</li></ul>
+<p>ある程度基礎が理解できたら、より実践的な有料講座に進むのも効果的です。段階的なアプローチで、着実にスキルを積み上げていきましょう。</p>
+<h2>つまずきやすいポイントと対策</h2>
+<p><strong>「インデックスがわからない」</strong></p>
+<p>リストや文字列のインデックス（何番目か）は、初心者にとってわかりにくい概念です。実際に手を動かして確認しながら学ぶことが重要です。</p>
+<p><strong>「エラーが読めない」</strong></p>
+<p>Pythonのエラーメッセージは、実は情報量が豊富です。エラー文を読む習慣をつけることで、デバッグ能力が飛躍的に向上します。</p>
+<p><strong>「コードの意味がわからない」</strong></p>
+<p>既存コードを読むのが難しければ、変数名を日本語に置き換えたり、コメントを追加したりして理解を深めましょう。</p>
+<h2>学習を続けるコツ</h2>
+<p>プログラミング学習は長期戦です。最初の3ヶ月を乗り切ったら、その後の継続が重要です。</p>
+<ul><li>毎日少しずつ（1日30分以上）コードに触れる</li><li>わからないことは躊躇せずに調べる</li><li>作ったプログラムを人に見せてフィードバックをもらう</li><li>プログラミングコミュニティに参加する</li></ul>
+<p>これらの習慣が、着実なスキル成長につながります。</p>
+<h2>まとめ</h2>
+<p>Python学習の最初の3ヶ月は、「環境構築に時間をかけない」「基本文法をしっかり定着させる」「小さなプロジェクトを完成させる」の3点がカギです。この期間で基礎が固まれば、その後の学習はぐっと楽になります。</p>
+<p>焦らず、着実に前に進むことが、Python習得への最短路です。</p>
+<section class="sources">
+<h2>参考リンク</h2>
+<ul><li>https://prog-8.com/</li><li>https://dotinstall.com/</li><li>https://schoo.jp/</li><li>https://www.udemy.com/</li></ul>
+</section>
+  </article>
+</main>
+<footer class="site-footer">
+  <div class="inner">
+    <p class="footer-disclosure"><span class="disclosure-badge">PR</span><span>※本記事にはプロモーション(アフィリエイト広告)が含まれています。</span></p>
+    <p>本サイトの情報は正確性に努めていますが、内容を保証するものではありません。掲載の商品・サービスの詳細は必ず公式サイトでご確認ください。</p>
+    <p><a href="https://blitzendegen915-beep.github.io/petrichor-learning/about/">運営者情報</a> ・ <a href="https://blitzendegen915-beep.github.io/petrichor-learning/contact/">お問い合わせ</a> ・ <a href="https://blitzendegen915-beep.github.io/petrichor-learning/privacy/">プライバシーポリシー</a></p>
+    <p>&copy; 2026 ペトリコール・ラーニング</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>ペトリコール・ラーニング</title>
+  <link>https://blitzendegen915-beep.github.io/petrichor-learning/</link>
+  <description>AI時代のスキル学習を遠回りせずに。プログラミング・AI学習のロードマップとスクール比較</description>
+  <language>ja</language>
+  <item>
+    <title>未経験からAIスキルを身につけるロードマップ</title>
+    <link>https://blitzendegen915-beep.github.io/petrichor-learning/ai-skill-roadmap-2026/</link>
+    <guid isPermaLink="true">https://blitzendegen915-beep.github.io/petrichor-learning/ai-skill-roadmap-2026/</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+    <description>AI初心者向けの体系的な学習ロードマップ。基礎から実践まで4段階で解説。必要なスキル、学習期間、実装経験まで網羅的にガイドします。</description>
+    <category>学習ロードマップ</category>
+  </item>
+  <item>
+    <title>独学とスクールどっちが向いてる?正直な比較</title>
+    <link>https://blitzendegen915-beep.github.io/petrichor-learning/dokugaku-vs-school-hikaku/</link>
+    <guid isPermaLink="true">https://blitzendegen915-beep.github.io/petrichor-learning/dokugaku-vs-school-hikaku/</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+    <description>プログラミング学習は独学とスクールどちらが向いているのか。適性の見分け方、費用の考え方、挫折が起きる理由と、自分で判断するための手順を正直に整理しました。</description>
+    <category>スクール比較</category>
+  </item>
+  <item>
+    <title>生成AIを仕事で実際に活用できるスキルにする方法</title>
+    <link>https://blitzendegen915-beep.github.io/petrichor-learning/generative-ai-shigoto-skill/</link>
+    <guid isPermaLink="true">https://blitzendegen915-beep.github.io/petrichor-learning/generative-ai-shigoto-skill/</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+    <description>ChatGPTやClaudeの基本的な使い方を超えて、仕事の生産性を高める生成AI活用スキルを身につけるロードマップ。</description>
+    <category>学習ロードマップ</category>
+  </item>
+  <item>
+    <title>未経験からのIT転職|現実的な道筋と必要な準備を徹底解説</title>
+    <link>https://blitzendegen915-beep.github.io/petrichor-learning/mikeiken-it-tenshoku-genjitsu/</link>
+    <guid isPermaLink="true">https://blitzendegen915-beep.github.io/petrichor-learning/mikeiken-it-tenshoku-genjitsu/</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+    <description>IT業界への転職は3ヶ月では実現しません。現実的なロードマップと年単位の準備計画、スクール活用法を解説します。</description>
+    <category>キャリア</category>
+  </item>
+  <item>
+    <title>無料で始めるプログラミング学習教材|有料への切り替えタイミングも解説</title>
+    <link>https://blitzendegen915-beep.github.io/petrichor-learning/muryou-programming-kyouzai/</link>
+    <guid isPermaLink="true">https://blitzendegen915-beep.github.io/petrichor-learning/muryou-programming-kyouzai/</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+    <description>プログラミング学習を無料で始める方法と教材を徹底比較。無料の限界を理解し、いつ有料に切り替えるべきかも解説します。</description>
+    <category>学習ロードマップ</category>
+  </item>
+  <item>
+    <title>プログラミングスクールの選び方｜失敗しない5つの基準</title>
+    <link>https://blitzendegen915-beep.github.io/petrichor-learning/programming-school-erabikata/</link>
+    <guid isPermaLink="true">https://blitzendegen915-beep.github.io/petrichor-learning/programming-school-erabikata/</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+    <description>プログラミングスクール選びで後悔しないために必須の5つの判断基準を解説。目的設定から卒業後サポートまで、失敗しない選び方のコツ。</description>
+    <category>スクール比較</category>
+  </item>
+  <item>
+    <title>Python学習の始め方｜最初の3ヶ月でやること</title>
+    <link>https://blitzendegen915-beep.github.io/petrichor-learning/python-gakushuu-hajimekata/</link>
+    <guid isPermaLink="true">https://blitzendegen915-beep.github.io/petrichor-learning/python-gakushuu-hajimekata/</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+    <description>Python初心者向けの実践的な学習ガイド。環境構築からライブラリまで、最初の3ヶ月で習得すべき内容を段階的に解説します。</description>
+    <category>学習ロードマップ</category>
+  </item>
+  <item>
+    <title>忙しい社会人向けAI学び直し|無理なく続ける学習法</title>
+    <link>https://blitzendegen915-beep.github.io/petrichor-learning/shakaijin-ai-manabinaoshi/</link>
+    <guid isPermaLink="true">https://blitzendegen915-beep.github.io/petrichor-learning/shakaijin-ai-manabinaoshi/</guid>
+    <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+    <description>仕事と育児で忙しい社会人が、スキマ時間を活用してAIを学ぶ現実的な方法。動画学習や完璧主義を手放すコツを解説します。</description>
+    <category>キャリア</category>
+  </item>
+</channel>
+</rss>

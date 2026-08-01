@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="base-uri 'none'; object-src 'none'; form-action 'self'">
+<title>型が効かないときの直し方 | ペトリコール・ラーニング</title>
+<meta name="description" content="第2章　指示の型を身につけるの第6回。型が効かないときの直し方について、確認問題つきで解説します。">
+<link rel="icon" href="https://blitzendegen915-beep.github.io/petrichor-learning/static/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://blitzendegen915-beep.github.io/petrichor-learning/static/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="https://blitzendegen915-beep.github.io/petrichor-learning/static/apple-touch-icon.png">
+<link rel="canonical" href="https://petrichot.com/learning/course/kata-ga-kikanai-toki/">
+<meta property="og:title" content="型が効かないときの直し方">
+<meta property="og:description" content="第2章　指示の型を身につけるの第6回。型が効かないときの直し方について、確認問題つきで解説します。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blitzendegen915-beep.github.io/petrichor-learning/course/kata-ga-kikanai-toki/">
+<meta property="og:site_name" content="ペトリコール・ラーニング">
+<meta property="og:image" content="https://blitzendegen915-beep.github.io/petrichor-learning/static/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="型が効かないときの直し方">
+<meta name="twitter:description" content="第2章　指示の型を身につけるの第6回。型が効かないときの直し方について、確認問題つきで解説します。">
+<meta name="twitter:image" content="https://blitzendegen915-beep.github.io/petrichor-learning/static/ogp.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"型が効かないときの直し方","url":"https://blitzendegen915-beep.github.io/petrichor-learning/course/kata-ga-kikanai-toki/","isPartOf":{"@type":"Course","name":"生成AI 実践コース","url":"https://blitzendegen915-beep.github.io/petrichor-learning/course/"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f7f3ea;
+  --surface: #ffffff;
+  --surface-2: #efe8d8;
+  --fg: #18140f;
+  --muted: #6b6357;
+  --accent: #ff4d23;
+  --accent-fg: #17130d;
+  --accent-soft: #ffe1d2;
+  --edu: #0f8f72;
+  --edu-fg: #ffffff;
+  --edu-soft: #d7f2e9;
+  --border: #e6dfcf;
+  --code-bg: #efe7d6;
+  --banner-bg: #fff1cf;
+  --banner-fg: #6b4a00;
+  --banner-border: #ecd79a;
+  --header-bg: rgba(247, 243, 234, 0.86);
+  --shadow: 0 10px 30px -12px rgba(24, 20, 15, 0.28);
+  --measure: 68ch;
+  --wide: 960px;
+  --eye-edu: var(--edu);
+  --eye-edu-soft: var(--edu-soft);
+  --eye-a: #0b5e8c;
+  --eye-a-soft: #dff0ff;
+  --eye-b: #7a5400;
+  --eye-b-soft: #fff0cf;
+  --eye-c: #a3213f;
+  --eye-c-soft: #ffe1e6;
+  --eye-d: #4c6a1f;
+  --eye-d-soft: #e6efd2;
+  --eye-e: #7a4420;
+  --eye-e-soft: #f0ded0;
+  --font-display: "Space Grotesk", "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+  --font-body: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0d0b;
+    --surface: #17191a;
+    --surface-2: #1f2221;
+    --fg: #f2ede2;
+    --muted: #a29a8b;
+    --accent: #ff7a4a;
+    --accent-fg: #0c0d0b;
+    --accent-soft: #3a2015;
+    --edu: #2fe3ac;
+    --edu-fg: #06231a;
+    --edu-soft: #123328;
+    --border: #2a2c2a;
+    --code-bg: #1c1e1d;
+    --banner-bg: #2c2308;
+    --banner-fg: #f2d886;
+    --banner-border: #4c3d10;
+    --header-bg: rgba(12, 13, 11, 0.82);
+    --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+    --eye-a: #7ecbff;
+    --eye-a-soft: #10314a;
+    --eye-b: #ffd873;
+    --eye-b-soft: #3a2c05;
+    --eye-c: #ff9db3;
+    --eye-c-soft: #3a1420;
+    --eye-d: #b7d67f;
+    --eye-d-soft: #26310f;
+    --eye-e: #e3b98a;
+    --eye-e-soft: #3a2818;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  line-height: 1.9;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::selection { background: var(--accent); color: #fff; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+img { max-width: 100%; height: auto; display: block; }
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--header-bg);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.9rem 1.25rem;
+}
+.site-header .inner {
+  max-width: var(--wide);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--fg);
+  min-width: 0;
+}
+.brand-mark {
+  flex-shrink: 0;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--edu) 100%);
+  transform: rotate(-8deg);
+  box-shadow: var(--shadow);
+}
+.brand-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.18rem;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.site-header nav a {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--muted);
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.42rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+.site-header nav a:hover,
+.site-header nav a:focus-visible {
+  color: var(--accent);
+  border-color: var(--border);
+  background: var(--surface);
+}
+
+.disclosure-banner {
+  max-width: var(--wide);
+  margin: 1rem auto 0;
+  padding: 0.65rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: var(--banner-bg);
+  color: var(--banner-fg);
+  border: 1px solid var(--banner-border);
+  border-radius: 10px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+.disclosure-badge {
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: var(--banner-fg);
+  color: var(--banner-bg);
+  margin-top: 0.1rem;
+}
+
+main {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+main.wide { max-width: var(--wide); }
+
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 1.2rem + 1.4vw, 2.15rem);
+  line-height: 1.45;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  margin: 0.6rem 0 1.1rem;
+}
+article { counter-reset: h2count; }
+h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 2.75rem 0 1.15rem;
+  padding-left: 0.85rem;
+  border-left: 4px solid var(--accent);
+}
+article h2::before {
+  counter-increment: h2count;
+  content: counter(h2count, decimal-leading-zero) " / ";
+  color: var(--accent);
+  opacity: 0.6;
+  font-size: 0.75em;
+  letter-spacing: 0.03em;
+}
+h3 {
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 700;
+  margin-top: 1.8rem;
+}
+p { margin: 0 0 1.15rem; }
+ul, ol { margin: 0 0 1.2rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.5rem; }
+ul > li::marker { color: var(--accent); }
+ol > li::marker { color: var(--accent); font-family: var(--font-display); font-weight: 700; }
+blockquote {
+  position: relative;
+  margin: 1.6rem 0;
+  padding: 0.9rem 1.2rem 0.9rem 1.4rem;
+  border-left: 4px solid var(--edu);
+  color: var(--muted);
+  background: var(--surface);
+  border-radius: 0 10px 10px 0;
+  font-style: italic;
+}
+blockquote p { margin: 0; }
+code {
+  background: var(--code-bg);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.4rem 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+.table-wrap th, .table-wrap td {
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.table-wrap td { white-space: normal; min-width: 8em; }
+.table-wrap thead th {
+  background: var(--card-bg);
+  font-weight: 700;
+  border-bottom: 2px solid var(--accent);
+}
+.table-wrap tbody tr:last-child td { border-bottom: none; }
+
+pre {
+  background: var(--code-bg);
+  padding: 1rem;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+pre code { background: none; padding: 0; }
+hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.chip-tag { background: var(--surface-2); color: var(--muted); }
+.chip-cat { font-weight: 700; }
+.chip-edu { background: var(--edu-soft); color: var(--edu); }
+.chip-a { background: #dff0ff; color: #0b5e8c; }
+.chip-b { background: #fff0cf; color: #7a5400; }
+.chip-c { background: #ffe1e6; color: #a3213f; }
+.chip-d { background: #e6efd2; color: #4c6a1f; }
+.chip-e { background: #f0ded0; color: #7a4420; }
+@media (prefers-color-scheme: dark) {
+  .chip-a { background: #10314a; color: #7ecbff; }
+  .chip-b { background: #3a2c05; color: #ffd873; }
+  .chip-c { background: #3a1420; color: #ff9db3; }
+  .chip-d { background: #26310f; color: #b7d67f; }
+  .chip-e { background: #3a2818; color: #e3b98a; }
+}
+
+.article-meta {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.article-meta time { font-family: var(--font-display); font-weight: 600; }
+
+.eyecatch-hero {
+  width: 100%;
+  height: clamp(120px, 26vw, 220px);
+  max-height: 220px;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  margin: 0 0 2.2rem;
+}
+
+.sources {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.sources h2 {
+  font-size: 1.05rem;
+  margin: 0 0 1rem;
+}
+.sources ul { padding-left: 1.3rem; }
+.sources li { margin-bottom: 0.5rem; }
+.sources a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 0.15em;
+}
+.sources a:hover, .sources a:focus-visible { color: var(--accent); }
+.sources a[target="_blank"]::after {
+  content: "\2197";
+  display: inline-block;
+  margin-left: 0.3em;
+  font-size: 0.85em;
+  opacity: 0.65;
+}
+
+.aff-cta {
+  margin: 2rem 0;
+  text-align: center;
+}
+.aff-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: var(--accent);
+  color: var(--accent-fg) !important;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  padding: 1rem 2.25rem;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.aff-btn::after { content: "\2192"; transition: transform 0.18s ease; }
+.aff-btn:hover, .aff-btn:focus-visible {
+  transform: translateY(-3px);
+  filter: brightness(1.05);
+  box-shadow: 0 18px 34px -14px var(--accent);
+}
+.aff-btn:hover::after { transform: translateX(3px); }
+.aff-btn:active { transform: translateY(-1px); }
+
+.article-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+@media (min-width: 700px) {
+  .article-grid { grid-template-columns: 1fr 1fr; }
+}
+.article-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  overflow: hidden;
+}
+.article-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: var(--accent);
+}
+.article-card .card-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--fg);
+  height: 100%;
+}
+.card-eyecatch {
+  width: 100%;
+  height: 132px;
+  overflow: hidden;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.card-eyecatch .eyecatch-svg,
+.eyecatch-hero .eyecatch-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.article-card:hover .card-eyecatch .eyecatch-svg { transform: scale(1.03); }
+.card-eyecatch .eyecatch-svg { transition: transform 0.3s ease; }
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.1rem 1.4rem 1.5rem;
+  flex: 1;
+}
+.article-card .card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+.article-card .card-date {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.article-card h2 {
+  font-size: 1.15rem;
+  border: none;
+  padding: 0;
+  margin: 0.2rem 0 0;
+  line-height: 1.55;
+}
+.article-card h2::before { content: none; }
+.article-card .desc {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.75;
+  margin: 0;
+}
+.empty-state {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  padding: 2rem 0;
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  margin-top: 4rem;
+  padding: 2rem 1.25rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.site-footer .inner { max-width: var(--wide); margin: 0 auto; }
+.site-footer p { margin: 0.35rem 0; }
+.site-footer a { color: var(--muted); }
+.site-footer a:hover { color: var(--accent); }
+
+.pb {
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface);
+  padding: 1.25rem;
+  margin: 2rem 0;
+}
+.pb-head { display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 1rem; }
+.pb-head strong { font-family: var(--font-display); font-size: 1.02rem; }
+.pb-note { font-size: 0.76rem; color: var(--muted); }
+.pb-presets {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+.pb-presets-label { font-size: 0.8rem; color: var(--muted); }
+.pb-preset {
+  font: inherit; font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+.pb-preset:hover { background: var(--accent-soft); }
+.pb-grid { display: grid; gap: 0.85rem; }
+@media (min-width: 640px) { .pb-grid { grid-template-columns: 1fr 1fr; } }
+.pb-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.pb-label { font-size: 0.82rem; font-weight: 700; }
+.pb-field textarea {
+  font: inherit; font-size: 0.9rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--bg);
+  color: var(--fg);
+  resize: vertical;
+}
+.pb-field textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.pb-out-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 1.15rem 0 0.4rem;
+  font-size: 0.82rem; font-weight: 700;
+}
+.pb-copy {
+  font: inherit; font-size: 0.78rem; font-weight: 700;
+  padding: 0.3rem 0.9rem;
+  border: none; border-radius: var(--r);
+  background: var(--accent); color: var(--accent-fg);
+  cursor: pointer;
+}
+.pb-out {
+  white-space: pre-wrap; word-break: break-word;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 0.85rem;
+  font-size: 0.88rem;
+  line-height: 1.75;
+  margin: 0;
+}
+.pb-out.is-empty { color: var(--muted); }
+
+/* --- コース --- */
+.cs-progress {
+  max-width: 760px; margin: 0 auto 2.5rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface);
+}
+.cs-rank { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+.cs-rank-badge {
+  font-family: var(--font-display); font-weight: 700; font-size: 0.9rem;
+  padding: 0.28rem 0.95rem; border-radius: 999px;
+  background: var(--accent); color: #fff;
+}
+.cs-rank-note { font-size: 0.82rem; color: var(--muted); }
+.cs-next-rank { margin: 0.3rem 0 0; font-size: 0.78rem; color: var(--accent); font-weight: 700; }
+.cs-bar { height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.cs-bar-fill { height: 100%; background: var(--accent); transition: width 0.3s ease; }
+.cs-progress-text { margin: 0.6rem 0 0; font-size: 0.85rem; font-weight: 700; }
+.cs-reset {
+  margin-top: 0.4rem; font: inherit; font-size: 0.76rem;
+  background: none; border: none; padding: 0;
+  color: var(--muted); text-decoration: underline; cursor: pointer;
+}
+.cs-chapter { max-width: 760px; margin: 0 auto 3rem; }
+.cs-summary { color: var(--muted); margin-bottom: 1.2rem; }
+.cs-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.cs-item a {
+  display: flex; align-items: center; gap: 0.9rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface);
+  text-decoration: none; color: inherit;
+}
+.cs-item a:hover { border-color: var(--accent); }
+.cs-n {
+  flex-shrink: 0; width: 1.9rem; height: 1.9rem;
+  display: grid; place-items: center; border-radius: 50%;
+  background: var(--surface-2); color: var(--muted);
+  font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
+}
+.cs-body { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; }
+.cs-title { font-weight: 700; }
+.cs-meta { font-size: 0.76rem; color: var(--muted); }
+.cs-check { flex-shrink: 0; width: 1.2rem; color: var(--accent); font-weight: 700; }
+.cs-item.is-done .cs-n { background: var(--accent); color: #fff; }
+.cs-item.is-done .cs-check::after { content: "✓"; }
+.cs-note {
+  max-width: 760px; margin: 0 auto; padding-bottom: 3rem;
+  font-size: 0.8rem; color: var(--muted);
+}
+
+/* --- 各回 --- */
+.lesson { max-width: 720px; margin: 0 auto; padding-top: 1.5rem; }
+.ls-crumb { font-size: 0.82rem; margin-bottom: 0.5rem; }
+.ls-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 2rem; }
+.ls-done { margin: 3rem 0 1rem; text-align: center; }
+.ls-done-btn {
+  font: inherit; font-weight: 700;
+  padding: 0.8rem 2rem;
+  border: 2px solid var(--accent); border-radius: 999px;
+  background: transparent; color: var(--accent); cursor: pointer;
+}
+.ls-done-btn.is-done { background: var(--accent); color: #fff; }
+.ls-done-btn:disabled { border-color: var(--border); color: var(--muted); cursor: not-allowed; }
+.ls-done-note { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
+.ls-nav {
+  max-width: 720px; margin: 0 auto 4rem;
+  display: flex; justify-content: space-between; gap: 1rem;
+  font-size: 0.85rem;
+}
+.ls-nav a { max-width: 48%; }
+
+/* --- 確認問題 --- */
+.qz {
+  border: 2px solid var(--border); border-radius: 10px;
+  background: var(--surface); padding: 1.25rem; margin: 2rem 0;
+}
+.qz-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.8rem; }
+.qz-text { font-weight: 700; margin: 0 0 0.7rem; }
+.qz-num {
+  display: inline-block; margin-right: 0.5rem;
+  font-family: var(--font-display); color: var(--accent);
+}
+.qz-opts { display: grid; gap: 0.45rem; }
+.qz-opt {
+  font: inherit; text-align: left;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg); color: var(--fg); cursor: pointer;
+}
+.qz-opt:hover:not(:disabled) { border-color: var(--accent); }
+.qz-opt:disabled { cursor: default; }
+.qz-opt.is-correct { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.qz-opt.is-wrong { opacity: 0.55; text-decoration: line-through; }
+.qz-explain {
+  margin: 0.6rem 0 0; padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: var(--surface-2);
+  font-size: 0.88rem; line-height: 1.8;
+}
+.qz-score {
+  margin: 1.5rem 0 0; padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  text-align: center; font-family: var(--font-display); font-weight: 700;
+}
+.qz-actions { margin: 0.7rem 0 0; text-align: center; }
+.qz-retry {
+  font: inherit; font-size: 0.8rem;
+  background: none; border: none; padding: 0;
+  color: var(--muted); text-decoration: underline; cursor: pointer;
+}
+.qz-retry:hover { color: var(--accent); }
+
+figure.diagram { margin: 2rem 0; }
+figure.diagram svg { width: 100%; height: auto; display: block; }
+figure.diagram figcaption {
+  margin-top: 0.6rem; font-size: 0.8rem; color: var(--muted); text-align: center;
+}
+
+.policy-page { max-width: 720px; margin: 0 auto; padding: 2rem 0 4rem; }
+.policy-page h1 { margin-bottom: 1.5rem; }
+.policy-page h2 { margin-top: 2.2rem; font-size: 1.15rem; }
+.policy-page p, .policy-page li { color: var(--muted); line-height: 1.9; }
+
+.site-footer .footer-disclosure {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--fg);
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="https://blitzendegen915-beep.github.io/petrichor-learning/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">ペトリコール・ラーニング</span>
+    </a>
+    <nav>
+      <a href="https://blitzendegen915-beep.github.io/petrichor-learning/">記事一覧</a>
+      <a class="nav-cta" href="https://blitzendegen915-beep.github.io/petrichor-learning/course/">講座で学ぶ</a>
+    </nav>
+  </div>
+</header>
+
+
+<main>
+  <article class="lesson">
+    <p class="ls-crumb"><a href="https://blitzendegen915-beep.github.io/petrichor-learning/course/">第2章　指示の型を身につける</a></p>
+    <h1>型が効かないときの直し方</h1>
+    <p class="ls-meta">第6回 / 全10回　約8分</p>
+    <p>前回の型を使っても、うまくいかない場面があります。今回は<strong>症状から原因を引ける形</strong>に整理します。</p>
+<h2>症状別の対処</h2>
+<p>困ったときは、まずどの症状かを見分けてください。原因と直し方が変わります。</p>
+<div class="table-wrap"><table><thead><tr><th>症状</th><th>原因</th><th>直し方</th></tr></thead><tbody><tr><td>一般論しか返ってこない</td><td>前提を渡していない</td><td>自分の状況を具体的に書く</td></tr><tr><td>話が長い・要点が見えない</td><td>形式の指定がない</td><td>「箇条書きで5つ」など形を指定</td></tr><tr><td>途中から話がずれる</td><td>会話が長くなり前提が薄れた</td><td>目的を書き直して伝え直す</td></tr><tr><td>事実が怪しい</td><td>正解が1つに決まる領域</td><td>根拠を出させ、自分で確認</td></tr><tr><td>何度やっても同じ答え</td><td>問い方が同じ</td><td>立場や条件を変えて聞く</td></tr></tbody></table></div>
+<p><strong>最初の行が最頻出</strong>です。「どうすればいいですか」と聞くと一般論が返るのは当たり前で、AIはこちらの状況を知らないからです。</p>
+<h2>3つの強い手</h2>
+<p>型を足しても抜けないときに効く、少し進んだ手を3つ紹介します。</p>
+<p><strong>1. 役割を与える</strong></p>
+<p>「あなたは編集者です」「採用担当の立場で見てください」のように立場を指定すると、<strong>選ばれる語彙と着眼点がまとめて変わります。</strong> 条件を10個並べるより効くことがあります。</p>
+<p>これは魔法ではありません。<strong>その立場の人が書きそうな文章に、出力が寄る</strong>というだけです。仕組みが分かっていれば、効く場面も見当がつきます。</p>
+<p><strong>2. 悪い例を示す</strong></p>
+<p>意外に効くのがこれです。</p>
+<blockquote><p>「ただし、こういう書き方は避けてください：（避けたい例を貼る）」</p></blockquote>
+<p><strong>良い例を示すより、悪い例のほうが効くことがあります。</strong> 良い例は真似の対象が広すぎますが、悪い例は避けるべき方向が一点に定まるからです。</p>
+<p><strong>3. 段階に分ける</strong></p>
+<p>長い作業を一度に頼まないことです。</p>
+<blockquote><p>❌ 「企画書を作って」<br>⭕ 「まず構成案だけ出して」→ 確認 →「この構成で本文を書いて」</p></blockquote>
+<p>途中で軌道修正できるので、やり直しが小さくて済みます。<strong>第1章で見たとおり、AIは前の文章に引きずられます。</strong> 最初の構成が間違ったまま本文まで書かれると、全部やり直しになります。</p>
+<h2>「聞き方を変えると答えが変わる」の使い道</h2>
+<p>第1章で、聞き方を変えると答えが変わるのは<strong>AIが確信を持っていない印</strong>だと説明しました。これは弱点であると同時に、<strong>確認の道具として使えます。</strong></p>
+<p>重要な判断に関わる情報は、次のように扱ってください。</p>
+<ol><li>一度聞く</li><li><strong>表現を変えて、もう一度聞く</strong></li><li>答えが一致するか見る</li></ol>
+<p>食い違ったら、そこは疑うべき箇所です。特に数字では有効です。</p>
+<h2>やってはいけない直し方</h2>
+<p>最後に、逆効果になる直し方を挙げます。</p>
+<ul><li><strong>「正確に答えてください」と書く</strong> — 気休めにはなりますが、正確さが保証されるわけではありません</li><li><strong>「絶対に間違えないで」と強く言う</strong> — 出力の調子が変わるだけで、仕組み上ゼロにはなりません</li><li><strong>同じ指示を何度も送る</strong> — 問い方が同じなら、返ってくるものも大きくは変わりません</li></ul>
+<p><strong>指示の工夫で解決できるのは「伝わっていない問題」だけ</strong>です。「AIが知らない・確かめられない問題」は、指示では解決しません。ここを混同すると、無駄な時間を使います。</p>
+<figure class="diagram"><svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>指示で解決できる問題とできない問題</title>
+  <rect x="30" y="30" width="270" height="140" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+  <text x="165" y="60" text-anchor="middle" font-size="14" fill="var(--fg)">伝わっていない問題</text>
+  <text x="165" y="88" text-anchor="middle" font-size="12" fill="var(--muted)">前提を渡していない</text>
+  <text x="165" y="110" text-anchor="middle" font-size="12" fill="var(--muted)">形を指定していない</text>
+  <text x="165" y="132" text-anchor="middle" font-size="12" fill="var(--muted)">目的が曖昧</text>
+  <text x="165" y="158" text-anchor="middle" font-size="13" fill="var(--accent)">指示で直せる</text>
+
+  <rect x="340" y="30" width="270" height="140" rx="8" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
+  <text x="475" y="60" text-anchor="middle" font-size="14" fill="var(--fg)">確かめられない問題</text>
+  <text x="475" y="88" text-anchor="middle" font-size="12" fill="var(--muted)">事実を知らない</text>
+  <text x="475" y="110" text-anchor="middle" font-size="12" fill="var(--muted)">最新の情報がない</text>
+  <text x="475" y="132" text-anchor="middle" font-size="12" fill="var(--muted)">正誤を判定できない</text>
+  <text x="475" y="158" text-anchor="middle" font-size="13" fill="var(--fg)">指示では直せない</text>
+
+  <text x="320" y="200" text-anchor="middle" font-size="12" fill="var(--muted)">右側に「正確に答えて」と書き足しても解決しない。確認するしかない</text>
+</svg><figcaption>指示で直せる問題と、直せない問題は別物</figcaption></figure>
+<h2>第2章のまとめ</h2>
+<ul><li>具体的な指示が効くのは、次の語を選ぶ手がかりが増えるから</li><li>型は<strong>目的・相手・条件・形式</strong>の4つ。抜けた項目に対応した崩れ方をする</li><li>一度で完成させず、返答を見て足していくほうが速い</li><li>強い手は<strong>役割の指定・悪い例の提示・段階分け</strong></li><li>表現を変えて聞き直すと、AIが確信を持てていない箇所が分かる</li><li>指示で直せるのは「伝わっていない問題」だけ</li></ul>
+<p>次章では、文章・画像・音声それぞれの実践に入ります。</p>
+<h2>確認問題</h2>
+
+<div class="qz" data-total="4">
+  <ol class="qz-list">
+    <li class="qz-q">
+      <p class="qz-text"><span class="qz-num">Q1</span>「どうすればいいですか」と聞いて一般論しか返ってこないとき、最も有効な対処はどれですか。</p>
+      <div class="qz-opts">
+        <button type="button" class="qz-opt" data-q="0" data-o="0" data-correct="0">同じ質問をもう一度送る</button>
+        <button type="button" class="qz-opt" data-q="0" data-o="1" data-correct="1">自分の状況や制約を具体的に書き添える</button>
+        <button type="button" class="qz-opt" data-q="0" data-o="2" data-correct="0">「具体的に答えて」と付け加える</button>
+        <button type="button" class="qz-opt" data-q="0" data-o="3" data-correct="0">有料プランに変更する</button>
+      </div>
+      <p class="qz-explain" data-q="0" hidden></p>
+    </li>
+    <li class="qz-q">
+      <p class="qz-text"><span class="qz-num">Q2</span>「悪い例を示す」が効くことがある理由として、最も適切なものはどれですか。</p>
+      <div class="qz-opts">
+        <button type="button" class="qz-opt" data-q="1" data-o="0" data-correct="0">悪い例のほうがAIの記憶に残りやすいから</button>
+        <button type="button" class="qz-opt" data-q="1" data-o="1" data-correct="1">避けるべき方向が一点に定まるから</button>
+        <button type="button" class="qz-opt" data-q="1" data-o="2" data-correct="0">悪い例は文字数が少なくて済むから</button>
+        <button type="button" class="qz-opt" data-q="1" data-o="3" data-correct="0">良い例を示すのは規約で禁止されているから</button>
+      </div>
+      <p class="qz-explain" data-q="1" hidden></p>
+    </li>
+    <li class="qz-q">
+      <p class="qz-text"><span class="qz-num">Q3</span>長い作業を段階に分けたほうがよい理由として、第1章の内容から説明できるものはどれですか。</p>
+      <div class="qz-opts">
+        <button type="button" class="qz-opt" data-q="2" data-o="0" data-correct="0">一度に長い文章を送ると料金が高くなるから</button>
+        <button type="button" class="qz-opt" data-q="2" data-o="1" data-correct="1">AIは前の文章に引きずられるため、最初の方向が誤ると全体がやり直しになるから</button>
+        <button type="button" class="qz-opt" data-q="2" data-o="2" data-correct="0">長い指示は途中で切られてしまうから</button>
+        <button type="button" class="qz-opt" data-q="2" data-o="3" data-correct="0">段階に分けないとエラーになるから</button>
+      </div>
+      <p class="qz-explain" data-q="2" hidden></p>
+    </li>
+    <li class="qz-q">
+      <p class="qz-text"><span class="qz-num">Q4</span>「絶対に間違えないでください」と指示に書くことについて、正しい説明はどれですか。</p>
+      <div class="qz-opts">
+        <button type="button" class="qz-opt" data-q="3" data-o="0" data-correct="0">誤りがなくなるので必ず書くべき</button>
+        <button type="button" class="qz-opt" data-q="3" data-o="1" data-correct="1">出力の調子は変わるが、仕組み上ゼロにはならない</button>
+        <button type="button" class="qz-opt" data-q="3" data-o="2" data-correct="0">書くと逆に誤りが増える</button>
+        <button type="button" class="qz-opt" data-q="3" data-o="3" data-correct="0">有料プランでのみ効果がある</button>
+      </div>
+      <p class="qz-explain" data-q="3" hidden></p>
+    </li></ol>
+  <p class="qz-score" hidden></p>
+  <p class="qz-actions"><button type="button" class="qz-retry">もう一度解く</button></p>
+</div>
+<script>
+(function () {
+  var root = document.currentScript.previousElementSibling;
+  var explains = ["AIはこちらの状況を知らないため、前提を渡さなければ一般論しか返せません。","良い例は真似の対象が広くなりがちですが、悪い例は避ける方向を明確に絞れます。","前の文脈が次の語の選択に影響するため、早い段階で確認するほど手戻りが小さくなります。","指示で解決できるのは「伝わっていない問題」であり、「確かめられない問題」は解決しません。"];
+  var total = Number(root.dataset.total);
+  var answered = {};
+
+  root.querySelectorAll(".qz-opt").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var qi = btn.dataset.q;
+      if (answered[qi]) return;
+      answered[qi] = true;
+
+      var correct = btn.dataset.correct === "1";
+      root.querySelectorAll('.qz-opt[data-q="' + qi + '"]').forEach(function (b) {
+        b.disabled = true;
+        if (b.dataset.correct === "1") b.classList.add("is-correct");
+      });
+      if (!correct) btn.classList.add("is-wrong");
+
+      var ex = root.querySelector('.qz-explain[data-q="' + qi + '"]');
+      ex.textContent =
+        (correct ? "正解です。" : "惜しい。正解は色の付いた選択肢です。") + explains[qi];
+      ex.hidden = false;
+
+      if (Object.keys(answered).length === total) {
+        var wrong = root.querySelectorAll(".qz-opt.is-wrong").length;
+        var hit = total - wrong;
+        var score = root.querySelector(".qz-score");
+        score.textContent = hit + " / " + total + " 問正解";
+        score.hidden = false;
+        // 全問正解のときだけ、この回を完了にできるようにする。
+        document.dispatchEvent(
+          new CustomEvent("quiz:done", { detail: { perfect: wrong === 0, hit: hit, total: total } })
+        );
+      }
+    });
+  });
+
+  var retry = root.querySelector(".qz-retry");
+  if (retry) {
+    retry.addEventListener("click", function () {
+      answered = {};
+      root.querySelectorAll(".qz-opt").forEach(function (b) {
+        b.disabled = false;
+        b.classList.remove("is-correct", "is-wrong");
+      });
+      root.querySelectorAll(".qz-explain").forEach(function (e) { e.hidden = true; });
+      root.querySelector(".qz-score").hidden = true;
+      document.dispatchEvent(new CustomEvent("quiz:reset"));
+      root.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+})();
+</script>
+
+    <div class="ls-done">
+      <button type="button" class="ls-done-btn" id="ls-done" disabled>この回を完了にする</button>
+      <p class="ls-done-note" id="ls-done-note">確認問題に全問正解すると完了にできます</p>
+    </div>
+  </article>
+  
+  <nav class="ls-nav">
+    <a class="ls-prev" href="https://blitzendegen915-beep.github.io/petrichor-learning/course/shiji-no-kihon-kata/">← 指示の基本の型をつくる</a>
+    <a class="ls-next" href="https://blitzendegen915-beep.github.io/petrichor-learning/course/bunshou-no-shigoto/">文章の仕事に使う →</a>
+  </nav>
+</main>
+<script>
+
+(function () {
+  var KEY = "pl-course-done";
+  window.plCourse = {
+    read: function () {
+      try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+    },
+    write: function (v) {
+      try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {}
+    },
+  };
+})();
+
+(function () {
+  var SLUG = "kata-ga-kikanai-toki";
+  var btn = document.getElementById("ls-done");
+  var note = document.getElementById("ls-done-note");
+
+  function paint() {
+    var done = window.plCourse.read();
+    if (done[SLUG]) {
+      btn.disabled = false;
+      btn.textContent = "完了ずみ（クリックで取り消す）";
+      btn.classList.add("is-done");
+      note.textContent = "進捗はこのブラウザにのみ保存されます";
+    } else {
+      btn.textContent = "この回を完了にする";
+      btn.classList.remove("is-done");
+      if (btn.disabled) note.textContent = "確認問題に全問正解すると完了にできます";
+    }
+  }
+
+  // 全問正解したときだけ、完了ボタンを押せるようにする。
+  document.addEventListener("quiz:done", function (e) {
+    if (e.detail.perfect) {
+      btn.disabled = false;
+      note.textContent = "全問正解です。完了にできます";
+    } else {
+      btn.disabled = true;
+      note.textContent =
+        e.detail.hit + " / " + e.detail.total + " 問正解。全問正解すると完了にできます";
+    }
+  });
+
+  document.addEventListener("quiz:reset", function () {
+    var done = window.plCourse.read();
+    if (!done[SLUG]) {
+      btn.disabled = true;
+      note.textContent = "確認問題に全問正解すると完了にできます";
+    }
+  });
+
+  btn.addEventListener("click", function () {
+    if (btn.disabled) return;
+    var done = window.plCourse.read();
+    if (done[SLUG]) { delete done[SLUG]; } else { done[SLUG] = true; }
+    window.plCourse.write(done);
+    paint();
+  });
+
+  paint();
+})();</script>
+<footer class="site-footer">
+  <div class="inner">
+    
+    <p>本サイトの情報は正確性に努めていますが、内容を保証するものではありません。掲載の商品・サービスの詳細は必ず公式サイトでご確認ください。</p>
+    <p><a href="https://blitzendegen915-beep.github.io/petrichor-learning/about/">運営者情報</a> ・ <a href="https://blitzendegen915-beep.github.io/petrichor-learning/contact/">お問い合わせ</a> ・ <a href="https://blitzendegen915-beep.github.io/petrichor-learning/privacy/">プライバシーポリシー</a></p>
+    <p>&copy; 2026 ペトリコール・ラーニング</p>
+  </div>
+</footer>
+</body>
+</html>

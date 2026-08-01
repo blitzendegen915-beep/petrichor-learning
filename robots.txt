@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://blitzendegen915-beep.github.io/petrichor-learning/sitemap.xml
